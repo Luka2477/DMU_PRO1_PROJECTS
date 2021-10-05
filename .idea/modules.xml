@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/DMU_PRO1_PROJECTS.iml" filepath="$PROJECT_DIR$/DMU_PRO1_PROJECTS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Project1_AlgoritmerDie/Project1_AlgoritmerDie.iml" filepath="$PROJECT_DIR$/Project1_AlgoritmerDie/Project1_AlgoritmerDie.iml" />
+    </modules>
+  </component>
+</project>
