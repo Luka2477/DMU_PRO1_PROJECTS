@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DMU_PRO1_PROJECTS.iml" filepath="$PROJECT_DIR$/DMU_PRO1_PROJECTS.iml" />
       <module fileurl="file://$PROJECT_DIR$/Project1_AlgoritmerDie/Project1_AlgoritmerDie.iml" filepath="$PROJECT_DIR$/Project1_AlgoritmerDie/Project1_AlgoritmerDie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Project2_Fravaerssystem/Project2_Fravaerssystem.iml" filepath="$PROJECT_DIR$/Project2_Fravaerssystem/Project2_Fravaerssystem.iml" />
     </modules>
   </component>
 </project>
