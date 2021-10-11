@@ -16,12 +16,15 @@ public class AfproevFravaersSystem {
         System.out.println();
 
         // opgave 7
-        System.out.printf("Det samlede antal fraværsdage elev 1 har er %d | Forventet 8%n", fravaersSystem.samletFravaer(fravaer21S, 0));
-        System.out.printf("Det gennemsnitte månedsfravær elev 1 har er %f | Forventet 0.667%n", fravaersSystem.gennemsnit(fravaer21S, 0));
-        System.out.printf("Det samlede antal elever uden fravær hele året er %d | Forventet 1%n", fravaersSystem.antalUdenFravaer(fravaer21S));
-        System.out.printf("Den elev med mest fravær er elev %d | Forventet 4%n", fravaersSystem.mestFravaer(fravaer21S) + 1);
+        System.out.printf("Det samlede antal fraværsdage elev 1 har er %d           | Forventet 8%n", fravaersSystem.samletFravaer(fravaer21S, 0));
+        System.out.printf("Det gennemsnitte månedsfravær elev 1 har er %f    | Forventet 0.667%n", fravaersSystem.gennemsnit(fravaer21S, 0));
+        System.out.printf("Det samlede antal elever uden fravær hele året er %d     | Forventet 1%n", fravaersSystem.antalUdenFravaer(fravaer21S));
+        System.out.printf("Den elev med mest fravær er elev %d                      | Forventet 4%n", fravaersSystem.mestFravaer(fravaer21S) + 1);
         System.out.println();
-        fravaersSystem.nulstil(fravaer21S, 2);
+        fravaersSystem.nulstil(fravaer21S, 3);
         fravaersSystem.udskrivFravaer(fravaer21S);
+        System.out.println();
+        System.out.printf("Det samlede antal elever uden fravær hele året er %d     | Forventet 2%n", fravaersSystem.antalUdenFravaer(fravaer21S));
+        System.out.printf("Den elev med mest fravær er elev %d                      | Forventet 5%n", fravaersSystem.mestFravaer(fravaer21S) + 1);
     }
 }
