@@ -7,9 +7,22 @@ public class FravaersSystem {
 	 * @param fravaer
 	 */
 	public void udskrivFravaer(int[][] fravaer) {
-		// TODO opgave 1
+		// opgave 1
 
+		System.out.print(" Måned :");
+		for(int i=1; i<=fravaer[0].length; i++)
+			System.out.printf("  %s", (i > 9) ? i : " " + i);
 
+		System.out.printf("%n%s%s%n", " ".repeat(8), "-".repeat(fravaer[0].length * 4));
+
+		for(int i=0; i<fravaer.length; i++) {
+			System.out.printf("Elev %d :", i);
+
+			for(int karrakter : fravaer[i])
+				System.out.printf("   %d", karrakter);
+
+			System.out.println();
+		}
 	}
 
 	/**
