@@ -1,5 +1,6 @@
 package afleveringfravaer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FravaersSystem {
@@ -49,8 +50,20 @@ public class FravaersSystem {
 	 * @return
 	 */
 	public double gennemsnit(int[][] fravaer, int elevNr) {
-		// TODO opgave 3
-		return -1;
+		// opgave 3
+		return (double) this.samletFravaer(fravaer, elevNr) / fravaer[elevNr].length;
+	}
+
+
+	/**
+	 * Returnerer om alle tal i integer arrayen list er 0.
+	 *
+	 * @param list integer array som checkes for 0er.
+	 * @return en boolean der besvarer om alle tal i arrayen er 0 eller ej
+	 */
+	private boolean allFalse(int[] list) {
+		for (int number : list) if(number != 0) return false;
+		return true;
 	}
 
 	/**
@@ -60,8 +73,12 @@ public class FravaersSystem {
 	 * @return
 	 */
 	public int antalUdenFravaer(int[][] fravaer) {
-		// TODO opgave 4
-		return -1;
+		// opgave 4
+		ArrayList<Integer> tempArray = new ArrayList<>();
+
+		for (int[] fravaersdage : fravaer) tempArray.add(!this.allFalse(fravaersdage) ? 0 : 1);
+
+		return tempArray.stream().mapToInt(Integer::intValue).sum();
 	}
 
 	/**
