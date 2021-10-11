@@ -1,5 +1,7 @@
 package afleveringfravaer;
 
+import java.util.Arrays;
+
 public class FravaersSystem {
 	/**
 	 * Fraværstallene udskrives på skærmen
@@ -34,8 +36,8 @@ public class FravaersSystem {
 	 * @return
 	 */
 	public int samletFravaer(int[][] fravaer, int elevNr) {
-		// TODO opgave 2
-		return -1;
+		// opgave 2
+		return Arrays.stream(fravaer[elevNr]).sum();
 	}
 
 	/**
