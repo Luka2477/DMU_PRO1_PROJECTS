@@ -20,7 +20,7 @@ public class FravaersSystem {
 		System.out.printf("%n%s%s%n", " ".repeat(8), "-".repeat(fravaer[0].length * 4));
 
 		for(int i=0; i<fravaer.length; i++) {
-			System.out.printf("Elev %d :", i);
+			System.out.printf("Elev %d :", i + 1);
 
 			for(int fravaersdage : fravaer[i])
 				System.out.printf("   %d", fravaersdage);
@@ -107,6 +107,7 @@ public class FravaersSystem {
 	 * @param elevNr
 	 */
 	public void nulstil(int[][] fravaer, int elevNr) {
-		// TODO opgave 6
+		// opgave 6
+		Arrays.fill(fravaer[elevNr], 0);
 	}
 }
