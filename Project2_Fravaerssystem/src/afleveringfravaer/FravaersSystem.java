@@ -18,8 +18,8 @@ public class FravaersSystem {
 		for(int i=0; i<fravaer.length; i++) {
 			System.out.printf("Elev %d :", i);
 
-			for(int karrakter : fravaer[i])
-				System.out.printf("   %d", karrakter);
+			for(int fravaersdage : fravaer[i])
+				System.out.printf("   %d", fravaersdage);
 
 			System.out.println();
 		}
