@@ -16,7 +16,8 @@ public class AfproevFravaersSystem {
         System.out.println();
         System.out.printf("Det samlede antal fraværsdage elev 1 har er %d | Forventet 8%n", fravaersSystem.samletFravaer(fravaer21S, 0));
         System.out.printf("Det gennemsnitte månedsfravær elev 1 har er %f | Forventet 0.667%n", fravaersSystem.gennemsnit(fravaer21S, 0));
-        System.out.printf("Det samlede antal elever uden fravær hele året er %d | Forventet 1", fravaersSystem.antalUdenFravaer(fravaer21S));
+        System.out.printf("Det samlede antal elever uden fravær hele året er %d | Forventet 1%n", fravaersSystem.antalUdenFravaer(fravaer21S));
+        System.out.printf("Den elev med mest fravær er elev %d | Forventet 4", fravaersSystem.mestFravaer(fravaer21S) + 1);
 
         //TODO opgave 7
 

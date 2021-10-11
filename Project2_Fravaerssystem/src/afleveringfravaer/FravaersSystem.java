@@ -2,6 +2,7 @@ package afleveringfravaer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class FravaersSystem {
 	/**
@@ -90,8 +91,12 @@ public class FravaersSystem {
 	 * @return
 	 */
 	public int mestFravaer(int[][] fravaer) {
-		// TODO opgave 5
-		return -1;
+		// opgave 5
+		ArrayList<Integer> tempArray = new ArrayList<>();
+
+		for (int i=0; i<fravaer.length; i++) tempArray.add(this.samletFravaer(fravaer, i));
+
+		return tempArray.indexOf(Collections.max(tempArray));
 	}
 
 	/**
