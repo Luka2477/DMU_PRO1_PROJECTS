@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Yatzy {
@@ -12,7 +13,7 @@ public class Yatzy {
 	private int throwCount = 0;
 
 	// Random number generator.
-	private Random random = new Random();
+	private final Random random = new Random();
 
 	public Yatzy() {
 		//
@@ -22,8 +23,7 @@ public class Yatzy {
 	 * Returns the 5 face values of the dice.
 	 */
 	public int[] getValues() {
-		// TODO
-		return null;
+		return this.values;
 	}
 
 	/**
@@ -31,23 +31,22 @@ public class Yatzy {
 	 * [1..6]. Note: This method is only meant to be used for test, and
 	 * therefore has package visibility.
 	 */
-	void setValues(int[] values) {
-		// TODO
+	public void setValues(int[] values) {
+		this.values = values;
 	}
 
 	/**
 	 * Returns the number of times the 5 dice has been thrown.
 	 */
 	public int getThrowCount() {
-		// TODO
-		return 0;
+		return this.throwCount;
 	}
 
 	/**
 	 * Resets the throw count.
 	 */
 	public void resetThrowCount() {
-		// TODO
+		this.throwCount = 0;
 	}
 
 	/**
@@ -55,7 +54,10 @@ public class Yatzy {
 	 * boolean values.
 	 */
 	public void throwDice(boolean[] holds) {
-		// TODO
+		for (int i=0; i<holds.length; i++)
+			if (!holds[i]) this.values[i] = 1 + this.random.nextInt(6);
+
+		this.throwCount++;
 	}
 
 	// -------------------------------------------------------------------------
@@ -90,8 +92,12 @@ public class Yatzy {
 	// <= 6.
 	// Index 0 is not used.
 	private int[] calcCounts() {
-		// TODO
-		return null;
+		int[] temp = new int[7];
+
+		for (int faceValue : this.values)
+			temp[faceValue]++;
+
+		return temp;
 	}
 
 	/**
@@ -99,8 +105,8 @@ public class Yatzy {
 	 * has the given face value. Pre: 1 <= value <= 6;
 	 */
 	public int sameValuePoints(int value) {
-		// TODO
-		return 0;
+		int[] faceValues = this.calcCounts();
+		return faceValues[value] * value;
 	}
 
 	/**
@@ -108,7 +114,10 @@ public class Yatzy {
 	 * Returns 0, if there aren't 2 dice with the same face value.
 	 */
 	public int onePairPoints() {
-		// TODO
+		int[] faceValues = this.calcCounts();
+		for (int i=faceValues.length-1; i>0; i--)
+			if(faceValues[i] >= 2) return i * 2;
+
 		return 0;
 	}
 
@@ -118,7 +127,14 @@ public class Yatzy {
 	 * with a different face value.
 	 */
 	public int twoPairPoints() {
-		// TODO
+		int[] faceValues = this.calcCounts();
+		int firstPair = this.onePairPoints();
+
+		if(firstPair == 0) return 0;
+
+		for (int i=firstPair/2-1; i>0; i--)
+			if(faceValues[i] >= 2) return firstPair + i * 2;
+
 		return 0;
 	}
 
@@ -127,7 +143,10 @@ public class Yatzy {
 	 * the same face value.
 	 */
 	public int threeSamePoints() {
-		// TODO
+		int[] faceValues = this.calcCounts();
+		for (int i=1; i<faceValues.length; i++)
+			if(faceValues[i] >= 3) return i * 3;
+
 		return 0;
 	}
 
@@ -136,7 +155,10 @@ public class Yatzy {
 	 * the same face value.
 	 */
 	public int fourSamePoints() {
-		// TODO
+		int[] faceValues = this.calcCounts();
+		for (int i=1; i<faceValues.length; i++)
+			if(faceValues[i] >= 4) return i * 4;
+
 		return 0;
 	}
 
@@ -145,7 +167,11 @@ public class Yatzy {
 	 * face value and 2 dice a different face value.
 	 */
 	public int fullHousePoints() {
-		// TODO
+		int threeSamePoints = this.threeSamePoints();
+		int twoSamePoints = this.onePairPoints();
+
+		if (threeSamePoints != 0 && twoSamePoints != 0 && twoSamePoints != threeSamePoints / 3 * 2) return threeSamePoints + twoSamePoints;
+
 		return 0;
 	}
 
@@ -154,8 +180,11 @@ public class Yatzy {
 	 * 1,2,3,4,5.
 	 */
 	public int smallStraightPoints() {
-		// TODO
-		return 0;
+		int[] faceValues = this.calcCounts();
+		for (int i=1; i<faceValues.length-1; i++)
+			if (faceValues[i] == 0) return 0;
+
+		return 15;
 	}
 
 	/**
@@ -163,16 +192,18 @@ public class Yatzy {
 	 * 2,3,4,5,6.
 	 */
 	public int largeStraightPoints() {
-		// TODO
-		return 0;
+		int[] faceValues = this.calcCounts();
+		for (int i=2; i<faceValues.length; i++)
+			if (faceValues[i] == 0) return 0;
+
+		return 20;
 	}
 
 	/**
 	 * Returns points for chance.
 	 */
 	public int chancePoints() {
-		// TODO
-		return 0;
+		return Arrays.stream(this.values).sum();
 	}
 
 	/**
@@ -180,8 +211,10 @@ public class Yatzy {
 	 * face value.
 	 */
 	public int yatzyPoints() {
-		// TODO
+		int[] faceValues = this.calcCounts();
+		for (int faceValue : faceValues)
+			if (faceValue == 5) return 50;
+
 		return 0;
 	}
-
 }
