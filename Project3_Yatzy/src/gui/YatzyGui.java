@@ -125,6 +125,8 @@ public class YatzyGui extends Application {
 			scorePane.add(this.txfResults[i], 1, i);
 		}
 
+		// TODO YOU CAN DO THIS BETTER YOU STUPID PERSON
+
 		Label lblSumSame = new Label("Sum:");
 		lblSumSame.setFont(new Font(10));
 
