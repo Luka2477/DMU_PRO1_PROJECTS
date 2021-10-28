@@ -1,15 +1,20 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.Yatzy;
+import org.w3c.dom.Text;
 
 public class YatzyGui extends Application {
 	
@@ -59,8 +64,40 @@ public class YatzyGui extends Application {
 		dicePane.setVgap(10);
 		dicePane.setStyle("-fx-border-color: black");
 
-		// initialize txfValues, chbHolds, btnRoll and lblRolled
-		// TODO
+		this.txfValues = new TextField[5];
+		this.chbHolds = new CheckBox[5];
+		for (int i=0; i<this.txfValues.length; i++) {
+			TextField txfValue = new TextField();
+			txfValue.setEditable(false);
+			txfValue.setPrefSize(75, 75);
+			txfValue.setFont(new Font(35));
+			txfValue.setAlignment(Pos.CENTER);
+
+			CheckBox chbHold = new CheckBox("Hold");
+			chbHold.setFont(new Font(10));
+			GridPane.setHalignment(chbHold, HPos.CENTER);
+
+			this.txfValues[i] = txfValue;
+			dicePane.add(this.txfValues[i], i, 0);
+
+			this.chbHolds[i] = chbHold;
+			dicePane.add(this.chbHolds[i], i, 1);
+		}
+
+		Button btnRoll = new Button("Roll");
+		btnRoll.setFont(new Font(20));
+		btnRoll.setOnAction(event -> this.handleBtnRoll());
+		GridPane.setHalignment(btnRoll, HPos.CENTER);
+
+		Label lblRolled = new Label("Rolled: 0");
+		lblRolled.setFont(new Font(10));
+		GridPane.setHalignment(lblRolled, HPos.CENTER);
+
+		this.btnRoll = btnRoll;
+		dicePane.add(this.btnRoll, 3, 2);
+
+		this.lblRolled = lblRolled;
+		dicePane.add(this.lblRolled, 4, 2);
 
 		// ---------------------------------------------------------------------
 
@@ -76,7 +113,52 @@ public class YatzyGui extends Application {
 		// Initialize labels for results, txfResults,
 		// labels and text fields for sums, bonus and total.
 		// TODO
+		String[] lblResults = {"1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "One pair", "Two pairs",
+				"Three same", "Four same", "Full House", "Small Straight", "Large Straight", "Chance", "Yatzy"};
+		this.txfResults = new TextField[15];
+		for (int i=0; i<this.txfResults.length; i++) {
+			Label lblResult = new Label(lblResults[i]);
+			lblResult.setFont(new Font(10));
 
+			TextField txfResult = new TextField();
+			txfResult.setEditable(false);
+			txfResult.setDisable(true);
+			txfResult.setPrefWidth(w);
+			txfResult.setFont(new Font(10));
+			txfResult.setAlignment(Pos.CENTER_RIGHT);
+
+			scorePane.add(lblResult, 0, i);
+			this.txfResults[i] = txfResult;
+			scorePane.add(this.txfResults[i], 1, i);
+		}
+
+		Label lblSumSame = new Label("Sum:");
+		lblSumSame.setFont(new Font(10));
+
+		TextField txfSumSame = new TextField("0");
+		txfSumSame.setEditable(false);
+		txfSumSame.setPrefWidth(w);
+		txfSumSame.setFont(new Font(10));
+		txfSumSame.setAlignment(Pos.CENTER_RIGHT);
+		txfSumSame.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+
+		Label lblBonus = new Label("Bonus:");
+		lblBonus.setFont(new Font(10));
+
+		TextField txfBonus = new TextField("0");
+		txfBonus.setEditable(false);
+		txfBonus.setPrefWidth(w);
+		txfBonus.setFont(new Font(10));
+		txfBonus.setAlignment(Pos.CENTER_RIGHT);
+		txfBonus.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+
+		scorePane.add(lblSumSame, 2, 5);
+		this.txfSumSame = txfSumSame;
+		scorePane.add(this.txfSumSame, 3, 5);
+
+		scorePane.add(lblBonus, 4, 5);
+		this.txfBonus = txfBonus;
+		scorePane.add(this.txfBonus, 5, 5);
 	}
 
 	// -------------------------------------------------------------------------
@@ -86,6 +168,9 @@ public class YatzyGui extends Application {
 	// Create a method for btnRoll's action.
 	// Hint: Create small helper methods to be used in the action method.
 	// TODO
+	private void handleBtnRoll () {
+
+	}
 
 	// -------------------------------------------------------------------------
 
