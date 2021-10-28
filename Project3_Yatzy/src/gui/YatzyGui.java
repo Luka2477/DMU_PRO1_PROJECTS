@@ -11,14 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.Yatzy;
-import org.w3c.dom.Text;
 
 public class YatzyGui extends Application {
-	
-
 	@Override
 	public void start(Stage stage) {
 		stage.setTitle("Yatzy");
@@ -41,7 +37,7 @@ public class YatzyGui extends Application {
 	// For free results (results not set yet), the results
 	// corresponding to the actual face values of the 5 dice are shown.
 	private TextField[] txfResults;
-	// Shows points in sums, bonus and total.
+	// Show points in sums, bonus and total.
 	private TextField txfSumSame, txfBonus, txfSumOther, txfTotal;
 	// Shows the number of times the dice has been rolled.
 	private Label lblRolled;
@@ -110,9 +106,6 @@ public class YatzyGui extends Application {
 		scorePane.setStyle("-fx-border-color: black");
 		int w = 50; // width of the text fields
 
-		// Initialize labels for results, txfResults,
-		// labels and text fields for sums, bonus and total.
-		// TODO
 		String[] lblResults = {"1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "One pair", "Two pairs",
 				"Three same", "Four same", "Full House", "Small Straight", "Large Straight", "Chance", "Yatzy"};
 		this.txfResults = new TextField[15];
@@ -159,6 +152,34 @@ public class YatzyGui extends Application {
 		scorePane.add(lblBonus, 4, 5);
 		this.txfBonus = txfBonus;
 		scorePane.add(this.txfBonus, 5, 5);
+
+		Label lblSumOther = new Label("Sum:");
+		lblSumOther.setFont(new Font(10));
+
+		TextField txfSumOther = new TextField("0");
+		txfSumOther.setEditable(false);
+		txfSumOther.setPrefWidth(w);
+		txfSumOther.setFont(new Font(10));
+		txfSumOther.setAlignment(Pos.CENTER_RIGHT);
+		txfSumOther.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+
+		Label lblTotal = new Label("Total:");
+		lblTotal.setFont(new Font(10));
+
+		TextField txfTotal = new TextField("0");
+		txfTotal.setEditable(false);
+		txfTotal.setPrefWidth(w);
+		txfTotal.setFont(new Font(10));
+		txfTotal.setAlignment(Pos.CENTER_RIGHT);
+		txfTotal.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+
+		scorePane.add(lblSumOther, 2, 14);
+		this.txfSumOther = txfSumOther;
+		scorePane.add(this.txfSumOther, 3, 14);
+
+		scorePane.add(lblTotal, 4, 14);
+		this.txfTotal = txfTotal;
+		scorePane.add(this.txfTotal, 5, 14);
 	}
 
 	// -------------------------------------------------------------------------
