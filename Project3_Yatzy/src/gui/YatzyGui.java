@@ -1,20 +1,20 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Yatzy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class YatzyGui extends Application {
@@ -46,6 +46,8 @@ public class YatzyGui extends Application {
 	private Label lblRolled;
 
 	private Button btnRoll;
+
+	private final int[] lockedResults = new int[15];
 
 	private void initContent(GridPane pane) {
 		pane.setGridLinesVisible(false);
@@ -145,26 +147,34 @@ public class YatzyGui extends Application {
 				txf.setPrefSize(w, 22);
 				txf.setFont(new Font(10));
 				txf.setAlignment(Pos.CENTER_RIGHT);
-				txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+				txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue; -fx-font-size: 7pt;");
 
 				scorePane.add(lbl, col * 2 + 2, rows[row]);
 				scorePane.add(txf, col * 2 + 3, rows[row]);
 				this.txfSumBonusSumTotal[row * 2 + col] = txf;
 			}
 		}
+
+		Arrays.fill(this.lockedResults, -1);
 	}
 
 	// -------------------------------------------------------------------------
 
 	private final Yatzy dice = new Yatzy();
-	private final int[] lockedResults = new int[15];
 
 	private void handleBtnRoll () {
 		this.throwDice();
 
 		this.updateValues();
 
-		if (this.dice.getThrowCount() == 3) this.rollAndHoldsDisabled(true);
+		if (this.dice.getThrowCount() == 3) {
+			if (this.getNotLockedResults().stream().allMatch(Node::isDisable)) {
+				this.resetRolls();
+				return;
+			}
+
+			this.rollAndHoldsDisabled(true);
+		}
 
 		this.updateResults();
 	}
@@ -182,6 +192,14 @@ public class YatzyGui extends Application {
 		this.lblRolled.setText("Rolled: " + this.dice.getThrowCount());
 	}
 
+	private ArrayList<TextField> getNotLockedResults () {
+		ArrayList<TextField> notLockedResults = new ArrayList<>();
+		for (int i=0; i<this.lockedResults.length; i++)
+			if (this.lockedResults[i] == -1) notLockedResults.add(this.txfResults[i]);
+
+		return notLockedResults;
+	}
+
 	private void rollAndHoldsDisabled (boolean value) {
 		this.btnRoll.setDisable(value);
 		for (CheckBox chbHold : this.chbHolds) chbHold.setDisable(value);
@@ -190,10 +208,10 @@ public class YatzyGui extends Application {
 	private void updateResults () {
 		int[] results = this.dice.getResults();
 		for (int i=0; i<results.length; i++) {
-			if (this.lockedResults[i] == 0) {
+			if (this.lockedResults[i] == -1) {
 				int result = results[i];
 				this.txfResults[i].setText(Integer.toString(result));
-				this.txfResults[i].setDisable(result == 0);
+				this.txfResults[i].setDisable(false);
 			}
 		}
 	}
@@ -204,13 +222,15 @@ public class YatzyGui extends Application {
 		TextField txfResult = (TextField) event.getSource();
 		int index = this.findTxfIndex(txfResult);
 
-		if (this.lockedResults[index] != 0) return;
+		if (this.lockedResults[index] != -1) return;
 
 		this.lockResult(txfResult, index);
 
 		this.updateSums();
 
 		this.resetRolls();
+
+		if (Arrays.stream(this.lockedResults).noneMatch(result -> result == -1)) this.gameOver();
 	}
 
 	private int findTxfIndex (TextField txf) {
@@ -221,15 +241,15 @@ public class YatzyGui extends Application {
 	}
 
 	private void lockResult (TextField txf, int index) {
-		txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+		txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue; -fx-font-size: 7pt;");
 		this.lockedResults[index] = Integer.parseInt(txf.getText());
 	}
 
 	private void updateSums () {
-		this.txfSumBonusSumTotal[0].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(this.lockedResults, 0, 6)).sum()));
-		this.txfSumBonusSumTotal[1].setText(Integer.toString((Arrays.stream(this.lockedResults).sum() >= 63) ? 50 : 0));
-		this.txfSumBonusSumTotal[2].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(this.lockedResults, 6, this.lockedResults.length)).sum()));
-		this.txfSumBonusSumTotal[3].setText(Integer.toString(Arrays.stream(this.lockedResults).sum()));
+		this.txfSumBonusSumTotal[0].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray(), 0, 6)).sum()));
+		this.txfSumBonusSumTotal[1].setText(Integer.toString((Integer.parseInt(this.txfSumBonusSumTotal[0].getText()) >= 63) ? 50 : 0));
+		this.txfSumBonusSumTotal[2].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray(), 6, this.lockedResults.length)).sum()));
+		this.txfSumBonusSumTotal[3].setText(Integer.toString(Arrays.stream(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray()).sum()));
 	}
 
 	private void resetRolls () {
@@ -240,7 +260,7 @@ public class YatzyGui extends Application {
 		this.rollAndHoldsDisabled(false);
 		this.resetHolds();
 
-		if (this.lockedResults[14] == 0) {
+		if (this.lockedResults[14] == -1) {
 			this.txfResults[14].setText(Integer.toString(0));
 			this.txfResults[14].setDisable(true);
 		}
@@ -248,5 +268,16 @@ public class YatzyGui extends Application {
 
 	private void resetHolds () {
 		for (CheckBox chbHold : this.chbHolds) chbHold.setSelected(false);
+	}
+
+	private void gameOver () {
+		Alert popup = new Alert(Alert.AlertType.INFORMATION);
+		popup.setTitle("Game Over");
+		popup.setHeaderText("You have ended the game by locking in all your results!");
+		popup.setContentText(String.format("You got %d points! Have a great day", Arrays.stream(this.lockedResults).sum()));
+		popup.showAndWait();
+
+		Platform.exit();
+		System.exit(0);
 	}
 }
