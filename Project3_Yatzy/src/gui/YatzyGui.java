@@ -246,10 +246,12 @@ public class YatzyGui extends Application {
 	}
 
 	private void updateSums () {
-		this.txfSumBonusSumTotal[0].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray(), 0, 6)).sum()));
+		int[] onlyLockedResults = Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray();
+
+		this.txfSumBonusSumTotal[0].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(onlyLockedResults, 0, 6)).sum()));
 		this.txfSumBonusSumTotal[1].setText(Integer.toString((Integer.parseInt(this.txfSumBonusSumTotal[0].getText()) >= 63) ? 50 : 0));
-		this.txfSumBonusSumTotal[2].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray(), 6, this.lockedResults.length)).sum()));
-		this.txfSumBonusSumTotal[3].setText(Integer.toString(Arrays.stream(Arrays.stream(this.lockedResults).map(result -> (result != -1) ? result : 0).toArray()).sum()));
+		this.txfSumBonusSumTotal[2].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(onlyLockedResults, 6, this.lockedResults.length)).sum()));
+		this.txfSumBonusSumTotal[3].setText(Integer.toString(Arrays.stream(onlyLockedResults).sum()));
 	}
 
 	private void resetRolls () {
