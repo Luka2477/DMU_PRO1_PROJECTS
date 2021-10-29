@@ -236,7 +236,7 @@ public class YatzyGui extends Application {
 			if (this.lockedResults[i] == -1) {
 				this.txfResults[i].setText(Integer.toString(results[i]));
 				this.txfResults[i].setDisable(false);
-			}
+			} else this.txfResults[i].setDisable(true);
 		}
 	}
 
@@ -322,6 +322,9 @@ public class YatzyGui extends Application {
 		this.rollAndHoldsDisabled(false);
 		this.resetHolds();
 
+		for (int i=0; i<this.lockedResults.length; i++)
+			this.txfResults[i].setDisable(this.lockedResults[i] == -1);
+
 		// If the Yatzy text field is not locked, then we need to set it to 0
 		// Otherwise it will say 50, because the 5, 0s are technically a Yatzy
 		if (this.lockedResults[14] == -1) {
@@ -346,7 +349,7 @@ public class YatzyGui extends Application {
 		Alert popup = new Alert(Alert.AlertType.INFORMATION);
 		popup.setTitle("Game Over");
 		popup.setHeaderText("You have ended the game by locking in all your results!");
-		popup.setContentText(String.format("You got %s points! Have a great day", this.txfSumBonusSumTotal[3]));
+		popup.setContentText(String.format("You got %s points! Have a great day", this.txfSumBonusSumTotal[3].getText()));
 		// Wait for the user to click the OK button
 		popup.showAndWait();
 

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class YatzyTest {
     private final Yatzy yatzy = new Yatzy();
-    
+
     @Test
     public void testSameFaceValuePoints() {
         int[] values = { 1, 2, 3, 4, 5 };
@@ -130,7 +130,11 @@ public class YatzyTest {
         yatzy.setValues(values3);
         int result3 = yatzy.fullHousePoints();
         Assert.assertEquals(0, result3);
-        
+
+        int[] values4 = {2, 2, 5, 5, 5};
+        yatzy.setValues(values4);
+        int result4 = yatzy.fullHousePoints();
+        Assert.assertEquals(19, result4);
     }
     
     @Test

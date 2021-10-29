@@ -167,12 +167,27 @@ public class Yatzy {
 	 * face value and 2 dice a different face value.
 	 */
 	public int fullHousePoints() {
-		int threeSamePoints = this.threeSamePoints();
-		int twoSamePoints = this.onePairPoints();
+		int[] counts = this.calcCounts();
 
-		if (threeSamePoints != 0 && twoSamePoints != 0 && twoSamePoints != threeSamePoints / 3 * 2) return threeSamePoints + twoSamePoints;
+		if (Arrays.stream(counts).anyMatch(count -> count == 3) && Arrays.stream(counts).anyMatch(count -> count == 2))
+			return this.indexOf(counts, 3) * 3 + this.indexOf(counts, 2) * 2;
 
 		return 0;
+	}
+
+	/**
+	 * Returns the index of the value in the array. Returns -1, if the value
+	 * doesn't exist in the array.
+	 *
+	 * @param arr the array to find value in
+	 * @param value the value to find
+	 * @return the index of the value in the array
+	 */
+	private int indexOf (int[] arr, int value) {
+		for (int i=0; i<arr.length; i++)
+			if (arr[i] == value) return i;
+
+		return -1;
 	}
 
 	/**
