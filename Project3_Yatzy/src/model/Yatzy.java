@@ -92,12 +92,12 @@ public class Yatzy {
 	// <= 6.
 	// Index 0 is not used.
 	private int[] calcCounts() {
-		int[] temp = new int[7];
+		int[] counts = new int[7];
 
 		for (int faceValue : this.values)
-			temp[faceValue]++;
+			counts[faceValue]++;
 
-		return temp;
+		return counts;
 	}
 
 	/**
@@ -105,8 +105,8 @@ public class Yatzy {
 	 * has the given face value. Pre: 1 <= value <= 6;
 	 */
 	public int sameValuePoints(int value) {
-		int[] faceValues = this.calcCounts();
-		return faceValues[value] * value;
+		int[] counts = this.calcCounts();
+		return counts[value] * value;
 	}
 
 	/**
@@ -114,9 +114,9 @@ public class Yatzy {
 	 * Returns 0, if there aren't 2 dice with the same face value.
 	 */
 	public int onePairPoints() {
-		int[] faceValues = this.calcCounts();
-		for (int i=faceValues.length-1; i>0; i--)
-			if(faceValues[i] >= 2) return i * 2;
+		int[] counts = this.calcCounts();
+		for (int i=counts.length-1; i>0; i--)
+			if(counts[i] >= 2) return i * 2;
 
 		return 0;
 	}
@@ -127,13 +127,13 @@ public class Yatzy {
 	 * with a different face value.
 	 */
 	public int twoPairPoints() {
-		int[] faceValues = this.calcCounts();
+		int[] counts = this.calcCounts();
 		int firstPair = this.onePairPoints();
 
 		if(firstPair == 0) return 0;
 
 		for (int i=firstPair/2-1; i>0; i--)
-			if(faceValues[i] >= 2) return firstPair + i * 2;
+			if(counts[i] >= 2) return firstPair + i * 2;
 
 		return 0;
 	}
@@ -143,9 +143,9 @@ public class Yatzy {
 	 * the same face value.
 	 */
 	public int threeSamePoints() {
-		int[] faceValues = this.calcCounts();
-		for (int i=1; i<faceValues.length; i++)
-			if(faceValues[i] >= 3) return i * 3;
+		int[] counts = this.calcCounts();
+		for (int i=1; i<counts.length; i++)
+			if(counts[i] >= 3) return i * 3;
 
 		return 0;
 	}
@@ -155,9 +155,9 @@ public class Yatzy {
 	 * the same face value.
 	 */
 	public int fourSamePoints() {
-		int[] faceValues = this.calcCounts();
-		for (int i=1; i<faceValues.length; i++)
-			if(faceValues[i] >= 4) return i * 4;
+		int[] counts = this.calcCounts();
+		for (int i=1; i<counts.length; i++)
+			if(counts[i] >= 4) return i * 4;
 
 		return 0;
 	}
@@ -180,9 +180,9 @@ public class Yatzy {
 	 * 1,2,3,4,5.
 	 */
 	public int smallStraightPoints() {
-		int[] faceValues = this.calcCounts();
-		for (int i=1; i<faceValues.length-1; i++)
-			if (faceValues[i] == 0) return 0;
+		int[] counts = this.calcCounts();
+		for (int i=1; i<counts.length-1; i++)
+			if (counts[i] == 0) return 0;
 
 		return 15;
 	}
@@ -192,9 +192,9 @@ public class Yatzy {
 	 * 2,3,4,5,6.
 	 */
 	public int largeStraightPoints() {
-		int[] faceValues = this.calcCounts();
-		for (int i=2; i<faceValues.length; i++)
-			if (faceValues[i] == 0) return 0;
+		int[] counts = this.calcCounts();
+		for (int i=2; i<counts.length; i++)
+			if (counts[i] == 0) return 0;
 
 		return 20;
 	}
@@ -211,9 +211,9 @@ public class Yatzy {
 	 * face value.
 	 */
 	public int yatzyPoints() {
-		int[] faceValues = this.calcCounts();
-		for (int faceValue : faceValues)
-			if (faceValue == 5) return 50;
+		int[] counts = this.calcCounts();
+		for (int count : counts)
+			if (count == 5) return 50;
 
 		return 0;
 	}
