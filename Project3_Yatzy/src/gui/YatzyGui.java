@@ -15,6 +15,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Yatzy;
 
+import java.util.Arrays;
+
 public class YatzyGui extends Application {
 	@Override
 	public void start(Stage stage) {
@@ -119,10 +121,10 @@ public class YatzyGui extends Application {
 			TextField txfResult = new TextField();
 			txfResult.setEditable(false);
 			txfResult.setDisable(true);
-			txfResult.setPrefWidth(w);
+			txfResult.setPrefSize(w, 22);
 			txfResult.setFont(new Font(10));
 			txfResult.setAlignment(Pos.CENTER_RIGHT);
-			txfResult.setOnAction(this::handleLockResult);
+			txfResult.setOnMouseClicked(this::handleLockResult);
 
 			scorePane.add(lblResult, 0, i);
 			scorePane.add(txfResult, 1, i);
@@ -140,7 +142,7 @@ public class YatzyGui extends Application {
 
 				TextField txf = new TextField("0");
 				txf.setEditable(false);
-				txf.setPrefWidth(w);
+				txf.setPrefSize(w, 22);
 				txf.setFont(new Font(10));
 				txf.setAlignment(Pos.CENTER_RIGHT);
 				txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
@@ -154,7 +156,7 @@ public class YatzyGui extends Application {
 
 	// -------------------------------------------------------------------------
 
-	private Yatzy dice = new Yatzy();
+	private final Yatzy dice = new Yatzy();
 	private final int[] lockedResults = new int[15];
 
 	private void handleBtnRoll () {
@@ -162,7 +164,7 @@ public class YatzyGui extends Application {
 
 		this.updateValues();
 
-		if (this.dice.getThrowCount() == 3) this.lastThrow();
+		if (this.dice.getThrowCount() == 3) this.rollAndHoldsDisabled(true);
 
 		this.updateResults();
 	}
@@ -180,9 +182,9 @@ public class YatzyGui extends Application {
 		this.lblRolled.setText("Rolled: " + this.dice.getThrowCount());
 	}
 
-	private void lastThrow () {
-		this.btnRoll.setDisable(true);
-		for (CheckBox chbHold : this.chbHolds) chbHold.setDisable(true);
+	private void rollAndHoldsDisabled (boolean value) {
+		this.btnRoll.setDisable(value);
+		for (CheckBox chbHold : this.chbHolds) chbHold.setDisable(value);
 	}
 
 	private void updateResults () {
@@ -198,10 +200,53 @@ public class YatzyGui extends Application {
 
 	// -------------------------------------------------------------------------
 
-	// Create a method for mouse click on one of the text fields in txfResults.
-	// Hint: Create small helper methods to be used in the mouse click method.
-	// TODO
 	private void handleLockResult (Event event) {
 		TextField txfResult = (TextField) event.getSource();
+		int index = this.findTxfIndex(txfResult);
+
+		if (this.lockedResults[index] != 0) return;
+
+		this.lockResult(txfResult, index);
+
+		this.updateSums();
+
+		this.resetRolls();
+	}
+
+	private int findTxfIndex (TextField txf) {
+		for (int i=0; i<this.txfResults.length; i++)
+			if (this.txfResults[i] == txf) return i;
+
+		return -1;
+	}
+
+	private void lockResult (TextField txf, int index) {
+		txf.setStyle("-fx-font-weight: bold; -fx-text-fill: blue;");
+		this.lockedResults[index] = Integer.parseInt(txf.getText());
+	}
+
+	private void updateSums () {
+		this.txfSumBonusSumTotal[0].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(this.lockedResults, 0, 6)).sum()));
+		this.txfSumBonusSumTotal[1].setText(Integer.toString((Arrays.stream(this.lockedResults).sum() >= 63) ? 50 : 0));
+		this.txfSumBonusSumTotal[2].setText(Integer.toString(Arrays.stream(Arrays.copyOfRange(this.lockedResults, 6, this.lockedResults.length)).sum()));
+		this.txfSumBonusSumTotal[3].setText(Integer.toString(Arrays.stream(this.lockedResults).sum()));
+	}
+
+	private void resetRolls () {
+		this.dice.setValues(new int[]{0, 0, 0, 0, 0});
+		this.dice.resetThrowCount();
+		this.updateValues();
+		this.updateResults();
+		this.rollAndHoldsDisabled(false);
+		this.resetHolds();
+
+		if (this.lockedResults[14] == 0) {
+			this.txfResults[14].setText(Integer.toString(0));
+			this.txfResults[14].setDisable(true);
+		}
+	}
+
+	private void resetHolds () {
+		for (CheckBox chbHold : this.chbHolds) chbHold.setSelected(false);
 	}
 }
