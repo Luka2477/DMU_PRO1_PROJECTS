@@ -9,6 +9,7 @@ public class Hotel {
 
     private final ArrayList<Conference> conferences = new ArrayList<>();
     private final ArrayList<HotelRoom> hotelRooms;
+    private final ArrayList<AddOn> addOns = new ArrayList<>();
 
     public Hotel (String name, String address, ArrayList<HotelRoom> hotelRooms) {
         this.name = name;
@@ -69,5 +70,21 @@ public class Hotel {
 
     public ArrayList<HotelRoom> getHotelRooms () {
         return new ArrayList<>(this.hotelRooms);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    public AddOn createAddOn (String name, int price) {
+        AddOn addOn = new AddOn(name, price);
+        this.addOns.add(addOn);
+        return addOn;
+    }
+
+    public void removeAddOn (AddOn addOn) {
+        this.addOns.remove(addOn);
+    }
+
+    public ArrayList<AddOn> getAddOns () {
+        return new ArrayList<>(this.addOns);
     }
 }

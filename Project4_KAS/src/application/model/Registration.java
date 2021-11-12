@@ -1,6 +1,7 @@
 package application.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Registration {
 
@@ -113,10 +114,6 @@ public class Registration {
         return companion;
     }
 
-    public void removeCompanion () {
-        this.companion = null;
-    }
-
     public Companion getCompanion() {
         return this.companion;
     }
@@ -124,9 +121,12 @@ public class Registration {
     // ------------------------------------------------------------------------------
 
     public double calulateTotalPrice () {
-        double sum = 0;
+        int daysOfStay = (int) ChronoUnit.DAYS.between(this.arrivalDate, this.departureDate);
+        double sum = (this.hotelRoom.getPrice() + this.conference.getDailyPrice()) * daysOfStay + this.hotelRoom.calculateAddOnPrice();
 
-        // TODO calculate the total price of the stay including, conference, hotel and excursions.
+        if (this.companion != null) {
+            sum += this.companion.calculateExcursionsPrice();
+        }
 
         return sum;
     }

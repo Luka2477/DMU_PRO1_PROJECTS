@@ -26,4 +26,14 @@ public class Companion extends Person {
     public ArrayList<Excursion> getExcursions () {
         return new ArrayList<>(this.excursions);
     }
+
+    // ------------------------------------------------------------------------------
+
+    public double calculateExcursionsPrice () {
+        double sum = 0.0;
+        for (Excursion excursion : this.excursions) {
+            sum += excursion.getPrice();
+        }
+        return sum;
+    }
 }

@@ -44,10 +44,10 @@ public class HotelRoom {
 
     // -------------------------------------------------------------------------------
 
-    public AddOn createAddOn (String name, int price) {
-        AddOn addOn = new AddOn(name, price);
-        this.addOns.add(addOn);
-        return addOn;
+    public void addAddOn (AddOn addOn) {
+        if (!this.addOns.contains(addOn)) {
+            this.addOns.add(addOn);
+        }
     }
 
     public void removeAddOn (AddOn addOn) {
@@ -56,5 +56,15 @@ public class HotelRoom {
 
     public ArrayList<AddOn> getAddOns () {
         return new ArrayList<>(this.addOns);
+    }
+
+    // -------------------------------------------------------------------------------
+
+    public double calculateAddOnPrice () {
+        double AddOnsPrice = 0.0;
+        for (AddOn addOn : this.addOns) {
+            AddOnsPrice += addOn.getPrice();
+        }
+        return AddOnsPrice;
     }
 }
