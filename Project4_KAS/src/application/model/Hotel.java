@@ -40,11 +40,15 @@ public class Hotel {
     public void addConference (Conference conference) {
         if (!this.conferences.contains(conference)) {
             this.conferences.add(conference);
+            conference.addHotel(this);
         }
     }
 
     public void removeConference (Conference conference) {
-        this.conferences.remove(conference);
+        if (this.conferences.contains(conference)) {
+            this.conferences.remove(conference);
+            conference.removeHotel(this);
+        }
     }
 
     public ArrayList<Conference> getConferences () {

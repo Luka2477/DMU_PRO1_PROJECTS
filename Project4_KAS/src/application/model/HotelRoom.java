@@ -6,14 +6,14 @@ public class HotelRoom {
 
     private int nr;
     private int price;
-    private boolean isSingle;
+    private boolean single;
 
     private ArrayList<AddOn> addOns = new ArrayList<>();
 
-    public HotelRoom (int nr, int price, boolean isSingle) {
+    public HotelRoom (int nr, int price, boolean single) {
         this.nr = nr;
         this.price = price;
-        this.isSingle = isSingle;
+        this.single = single;
     }
 
     // -------------------------------------------------------------------------------
@@ -35,19 +35,19 @@ public class HotelRoom {
     }
 
     public boolean isSingle () {
-        return this.isSingle;
+        return this.single;
     }
 
     public void setSingle (boolean single) {
-        this.isSingle = single;
+        this.single = single;
     }
 
     // -------------------------------------------------------------------------------
 
-    public void addAddOn (AddOn addOn) {
-        if (!this.addOns.contains(addOn)) {
-            this.addOns.add(addOn);
-        }
+    public AddOn createAddOn (String name, int price) {
+        AddOn addOn = new AddOn(name, price);
+        this.addOns.add(addOn);
+        return addOn;
     }
 
     public void removeAddOn (AddOn addOn) {
