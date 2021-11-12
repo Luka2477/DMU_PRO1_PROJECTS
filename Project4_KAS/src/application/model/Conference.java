@@ -1,4 +1,4 @@
 package application.model;
 
-public class Konference {
+public class Conference {
 }
