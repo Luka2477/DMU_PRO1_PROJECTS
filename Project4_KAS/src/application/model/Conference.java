@@ -12,9 +12,9 @@ public class Conference {
     private LocalDateTime endDate;
     private LocalDateTime deadline;
 
-    private ArrayList<Registration> registrations = new ArrayList<>();
-    private ArrayList<Hotel> hotels = new ArrayList<>();
-    private ArrayList<Excursion> excursions = new ArrayList<>();
+    private final ArrayList<Registration> registrations = new ArrayList<>();
+    private final ArrayList<Hotel> hotels = new ArrayList<>();
+    private final ArrayList<Excursion> excursions = new ArrayList<>();
 
     public Conference (String name, String address, int dailyPrice, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime deadline) {
         this.name = name;
