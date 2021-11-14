@@ -1,6 +1,7 @@
 package application.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Excursion {
 
@@ -69,5 +70,15 @@ public class Excursion {
 
     public void setLunchIncluded(boolean lunchIncluded) {
         this.lunchIncluded = lunchIncluded;
+    }
+
+    // ------------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM-yy @ HH:mm");
+        return String.format("%s, %s - %s%n%s%nKr. %d %s",
+                this.name, this.destination, this.dateTime.format(dtf),
+                this.description, this.price, (this.lunchIncluded) ? "inkl. Frokost" : "");
     }
 }

@@ -1,6 +1,7 @@
 package application.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Conference {
@@ -123,11 +124,29 @@ public class Conference {
         }
     }
 
+    public void addExcursions (Excursion... excursions) {
+        for (Excursion excursion : excursions) {
+            if (!this.excursions.contains(excursion)) {
+                this.excursions.add(excursion);
+            }
+        }
+    }
+
     public void removeExcursion (Excursion excursion) {
         this.excursions.remove(excursion);
     }
 
     public ArrayList<Excursion> getExcursions () {
         return new ArrayList<>(this.excursions);
+    }
+
+    // ------------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("dd-MM @ HH:mm");
+        DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("dd-MM-yyyy @ HH:mm");
+        return String.format("%s konference.%n%s - %s på %s.%nTilmeldingsfrist: %s",
+                this.name, this.startDate.format(dtf1), this.endDate.format(dtf2), this.address, this.deadline.format(dtf1));
     }
 }
