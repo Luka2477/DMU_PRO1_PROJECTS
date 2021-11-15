@@ -10,6 +10,8 @@ public class AddOn {
         this.price = price;
     }
 
+    // ----------------------------------------------------------------------------
+
     public String getName () {
         return this.name;
     }
@@ -26,4 +28,10 @@ public class AddOn {
         this.price = price;
     }
 
+    // ----------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        return (this.price == 0) ? "Alle med " + this.name : String.format("Tillæg kr. %d for %s", this.price, this.name);
+    }
 }

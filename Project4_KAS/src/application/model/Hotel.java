@@ -6,16 +6,18 @@ public class Hotel {
 
     private String name;
     private String address;
+    private int singlePrice;
+    private int doublePrice;
 
     private final ArrayList<Conference> conferences = new ArrayList<>();
-    private final ArrayList<HotelRoom> hotelRooms;
+    private final ArrayList<HotelRoom> hotelRooms = new ArrayList<>();
     private final ArrayList<AddOn> addOns = new ArrayList<>();
 
-    public Hotel (String name, String address, ArrayList<HotelRoom> hotelRooms) {
+    public Hotel (String name, String address, int singlePrice, int doublePrice) {
         this.name = name;
         this.address = address;
-
-        this.hotelRooms = hotelRooms;
+        this.singlePrice = singlePrice;
+        this.doublePrice = doublePrice;
     }
 
     // ----------------------------------------------------------------------------
@@ -34,6 +36,22 @@ public class Hotel {
 
     public void setAddress (String address) {
         this.address = address;
+    }
+
+    public int getSinglePrice() {
+        return this.singlePrice;
+    }
+
+    public void setSinglePrice(int singlePrice) {
+        this.singlePrice = singlePrice;
+    }
+
+    public int getDoublePrice() {
+        return this.doublePrice;
+    }
+
+    public void setDoublePrice(int doublePrice) {
+        this.doublePrice = doublePrice;
     }
 
     // ----------------------------------------------------------------------------
@@ -86,5 +104,13 @@ public class Hotel {
 
     public ArrayList<AddOn> getAddOns () {
         return new ArrayList<>(this.addOns);
+    }
+
+    // ----------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        return String.format("%s i %s%nEnkeltværselsespris: %d | Doubleværelsespris: %d",
+                this.name, this.address, this.singlePrice, this.doublePrice);
     }
 }

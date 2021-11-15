@@ -105,6 +105,14 @@ public class Conference {
         }
     }
 
+    public void addHotels (Hotel... hotels) {
+        for (Hotel hotel : hotels) {
+            if (!this.hotels.contains(hotel)) {
+                this.hotels.add(hotel);
+            }
+        }
+    }
+
     public void removeHotel (Hotel hotel) {
         if (this.hotels.contains(hotel)) {
             this.hotels.remove(hotel);

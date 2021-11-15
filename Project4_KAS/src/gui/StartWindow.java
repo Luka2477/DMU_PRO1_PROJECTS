@@ -42,14 +42,12 @@ public class StartWindow extends Application {
 
         RegistrationPane registrationPane = new RegistrationPane();
         tabRegistration.setContent(registrationPane);
-        tabRegistration.setOnSelectionChanged(event -> registrationPane.updateControls());
 
         Tab tabAdmin = new Tab("Admin");
         tabPane.getTabs().add(tabAdmin);
 
         AdminPane adminPane = new AdminPane();
         tabAdmin.setContent(adminPane);
-        tabAdmin.setOnSelectionChanged(event -> adminPane.updateControls());
     }
 
 }

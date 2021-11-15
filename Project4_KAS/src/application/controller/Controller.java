@@ -1,7 +1,9 @@
 package application.controller;
 
+import application.model.AddOn;
 import application.model.Conference;
 import application.model.Excursion;
+import application.model.Hotel;
 import storage.Storage;
 
 import java.time.LocalDateTime;
@@ -34,6 +36,18 @@ public abstract class Controller {
 
         Storage.addExcursions(e1, e2, e3);
         c1.addExcursions(e1, e2, e3);
+
+        Hotel h1 = new Hotel("Den Hvide Svane", "Odense", 1050, 1250);
+        h1.createAddOn("bad", 0);
+        h1.createAddOn("WIFI", 50);
+        Hotel h2 = new Hotel("Hotel Phønix", "Odense", 700, 800);
+        h2.createAddOn("bad", 200);
+        h2.createAddOn("WIFI", 75);
+        Hotel h3 = new Hotel("Pension Tusindfryd", "Odense", 500, 600);
+        h3.createAddOn("morgenmad", 100);
+
+        Storage.addHotels(h1, h2, h3);
+        c1.addHotels(h1, h2, h3);
     }
 
     // --------------------------------------------------------------

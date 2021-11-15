@@ -2,6 +2,7 @@ package storage;
 
 import application.model.Conference;
 import application.model.Excursion;
+import application.model.Hotel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ public abstract class Storage {
 
     private static final ArrayList<Conference> conferences = new ArrayList<>();
     private static final ArrayList<Excursion> excursions = new ArrayList<>();
+    private static final ArrayList<Hotel> hotels = new ArrayList<>();
 
     // --------------------------------------------------------------
 
@@ -45,5 +47,23 @@ public abstract class Storage {
 
     public static ArrayList<Excursion> getExcursions () {
         return new ArrayList<>(Storage.excursions);
+    }
+
+    // --------------------------------------------------------------
+
+    public static void addHotel (Hotel hotel) {
+        Storage.hotels.add(hotel);
+    }
+
+    public static void addHotels (Hotel... hotels) {
+        Storage.hotels.addAll(Arrays.asList(hotels));
+    }
+
+    public static void removeHotel (Hotel hotel) {
+        Storage.hotels.remove(hotel);
+    }
+
+    public static ArrayList<Hotel> getHotels () {
+        return new ArrayList<>(Storage.hotels);
     }
 }

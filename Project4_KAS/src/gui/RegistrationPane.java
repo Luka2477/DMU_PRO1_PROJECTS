@@ -1,8 +1,10 @@
 package gui;
 
 import application.controller.Controller;
+import application.model.AddOn;
 import application.model.Conference;
 import application.model.Excursion;
+import application.model.Hotel;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -22,10 +24,12 @@ public class RegistrationPane extends GridPane {
 
     private final ListView<Conference> lvwConferences;
     private final ListView<Excursion> lvwExcursions;
-    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone, txfCompanyName, txfCompanyTelephone, txfCompanionName, txfCompanionTelephone;
-    private final CheckBox chbSpeaker, chbCompanion;
+    private final ListView<Hotel> lvwHotels;
+    private final ListView<AddOn> lvwAddOns;
+    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone, txfCompanyName, txfCompanyTelephone, txfCompanionName;
+    private final CheckBox chbSpeaker, chbCompanion, chbHotel;
     private final DatePicker dtpStart, dtpEnd;
-    private final Label lblCompanionName, lblCompanionTelephone, lblExcursions;
+    private final Label lblCompanionName, lblExcursions, lblHotels, lblAddOns, lblDouble;
 
     public RegistrationPane () {
         this.setPadding(new Insets(10));
@@ -70,9 +74,11 @@ public class RegistrationPane extends GridPane {
         this.txfName = new TextField();
         this.participantGridPane.add(this.txfName, 1, 1);
 
-        this.chbSpeaker = new CheckBox("Foredragsholder");
-        GridPane.setHalignment(this.chbSpeaker, HPos.CENTER);
-        this.participantGridPane.add(this.chbSpeaker, 2, 1, 2, 1);
+        Label lblSpeaker = new Label("Foredragsholder");
+        this.chbSpeaker = new CheckBox();
+        lblSpeaker.setGraphic(this.chbSpeaker);
+        lblSpeaker.setContentDisplay(ContentDisplay.RIGHT);
+        this.participantGridPane.add(lblSpeaker, 2, 1, 2, 1);
 
         Label lblAddress = new Label("Adresse:");
         this.participantGridPane.add(lblAddress, 0, 2);
@@ -110,21 +116,26 @@ public class RegistrationPane extends GridPane {
         this.dtpEnd = new DatePicker();
         this.participantGridPane.add(this.dtpEnd, 3, 4);
 
+        Label lblCompany = new Label("Deltager du i forbindelse med arbejde, indtast venligst nedenstående");
+        lblCompany.setFont(new Font(15));
+        this.participantGridPane.add(lblCompany, 0, 5, 4, 1);
+
         Label lblCompanyName = new Label("Firmanavn:");
-        this.participantGridPane.add(lblCompanyName, 0, 5);
+        this.participantGridPane.add(lblCompanyName, 0, 6);
 
         this.txfCompanyName = new TextField();
-        this.participantGridPane.add(this.txfCompanyName, 1, 5);
+        this.participantGridPane.add(this.txfCompanyName, 1, 6);
 
         Label lblCompanyTelephone = new Label("Firma tlf.nr.");
-        this.participantGridPane.add(lblCompanyTelephone, 2, 5);
+        this.participantGridPane.add(lblCompanyTelephone, 2, 6);
 
         this.txfCompanyTelephone = new TextField();
-        this.participantGridPane.add(this.txfCompanyTelephone, 3, 5);
+        this.participantGridPane.add(this.txfCompanyTelephone, 3, 6);
 
         // --------------------------------------------------------------
 
         this.companionGridPane = new GridPane();
+        this.companionGridPane.setPrefWidth(500);
         this.companionGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
         this.companionGridPane.setDisable(true);
         this.add(this.companionGridPane, 1, 1);
@@ -134,40 +145,31 @@ public class RegistrationPane extends GridPane {
         GridPane.setHalignment(lblCompanionHeader, HPos.CENTER);
         this.companionGridPane.add(lblCompanionHeader, 0, 0, 4, 1);
 
-        this.chbCompanion = new CheckBox("Medbring ledsager");
+        Label lblCompanion = new Label("Medbring ledsager");
+        this.chbCompanion = new CheckBox();
         this.chbCompanion.setOnAction(event -> this.checkBoxCompanionAction());
-        GridPane.setHalignment(this.chbCompanion, HPos.CENTER);
-        this.companionGridPane.add(this.chbCompanion, 0, 1, 4, 1);
+        lblCompanion.setGraphic(this.chbCompanion);
+        lblCompanion.setContentDisplay(ContentDisplay.RIGHT);
+        this.companionGridPane.add(lblCompanion, 0, 1, 2, 1);
 
         this.lblCompanionName = new Label("Navn:");
         this.lblCompanionName.setDisable(true);
-        this.companionGridPane.add(this.lblCompanionName, 0, 2);
+        this.companionGridPane.add(this.lblCompanionName, 2, 1);
 
         this.txfCompanionName = new TextField();
         this.txfCompanionName.setDisable(true);
-        this.companionGridPane.add(this.txfCompanionName, 1, 2);
-
-        this.lblCompanionTelephone = new Label("Tlf.nr.");
-        this.lblCompanionTelephone.setDisable(true);
-        this.companionGridPane.add(this.lblCompanionTelephone, 2, 2);
-
-        this.txfCompanionTelephone = new TextField();
-        this.txfCompanionTelephone.setDisable(true);
-        this.companionGridPane.add(this.txfCompanionTelephone, 3, 2);
+        this.companionGridPane.add(this.txfCompanionName, 3, 1);
 
         this.lblExcursions = new Label("Udflugter");
-        this.lblExcursions.setFont(new Font(20));
+        this.lblExcursions.setFont(new Font(15));
         this.lblExcursions.setDisable(true);
-        GridPane.setHalignment(this.lblExcursions, HPos.CENTER);
-        this.companionGridPane.add(this.lblExcursions, 0, 3, 4, 1);
+        this.companionGridPane.add(this.lblExcursions, 0, 2, 4, 1);
 
         this.lvwExcursions = new ListView<>();
         this.lvwExcursions.setPrefSize(500, 200);
+        this.lvwExcursions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.lvwExcursions.setDisable(true);
-        this.companionGridPane.add(this.lvwExcursions, 0, 4, 4, 1);
-
-        ChangeListener<Excursion> listenerExcursion = (ov, oldExcursion, newExcursion) -> this.selectedExcursionChanged(newExcursion);
-        this.lvwExcursions.getSelectionModel().selectedItemProperty().addListener(listenerExcursion);
+        this.companionGridPane.add(this.lvwExcursions, 0, 3, 4, 1);
 
         // --------------------------------------------------------------
 
@@ -175,6 +177,48 @@ public class RegistrationPane extends GridPane {
         this.hotelGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
         this.hotelGridPane.setDisable(true);
         this.add(this.hotelGridPane, 0, 2, 2, 1);
+
+        Label lblHotelHeader = new Label("Overnatningsønsker");
+        lblHotelHeader.setFont(new Font(25));
+        GridPane.setHalignment(lblHotelHeader, HPos.CENTER);
+        this.hotelGridPane.add(lblHotelHeader, 0, 0, 2, 1);
+
+        Label lblHotel = new Label("Vil du booke hotel igennem os");
+        this.chbHotel = new CheckBox();
+        this.chbHotel.setOnAction(event -> this.checkBoxHotelAction());
+        lblHotel.setGraphic(this.chbHotel);
+        lblHotel.setContentDisplay(ContentDisplay.RIGHT);
+        GridPane.setHalignment(lblHotel, HPos.CENTER);
+        this.hotelGridPane.add(lblHotel, 0, 1, 2, 1);
+
+        this.lblHotels = new Label("Hoteler");
+        this.lblHotels.setFont(new Font(15));
+        this.lblHotels.setDisable(true);
+        this.hotelGridPane.add(this.lblHotels, 0, 2);
+
+        this.lvwHotels = new ListView<>();
+        this.lvwHotels.setPrefSize(700, 200);
+        this.lvwHotels.setDisable(true);
+        this.hotelGridPane.add(this.lvwHotels, 0, 3);
+
+        ChangeListener<Hotel> listenerHotels = (ov, oldHotel, newHotel) -> this.selectedHotelChanged(newHotel);
+        this.lvwHotels.getSelectionModel().selectedItemProperty().addListener(listenerHotels);
+
+        this.lblAddOns = new Label("Tillæg");
+        this.lblAddOns.setFont(new Font(15));
+        this.lblAddOns.setDisable(true);
+        this.hotelGridPane.add(this.lblAddOns, 1, 2);
+
+        this.lvwAddOns = new ListView<>();
+        this.lvwAddOns.setPrefSize(300, 200);
+        this.lvwAddOns.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.lvwAddOns.setDisable(true);
+        this.hotelGridPane.add(this.lvwAddOns, 1, 3);
+
+        this.lblDouble = new Label("Bemærk at såfremt du medbringer en ledsager tildeles i automatisk et dobbeltværelse");
+        this.lblDouble.setWrapText(true);
+        this.lblDouble.setDisable(true);
+        this.hotelGridPane.add(this.lblDouble, 0, 4, 2, 1);
 
         // --------------------------------------------------------------
 
@@ -194,19 +238,27 @@ public class RegistrationPane extends GridPane {
         this.updateControls();
     }
 
+    private void selectedHotelChanged (Hotel newHotel) {
+        this.lvwAddOns.getItems().setAll(newHotel.getAddOns());
+    }
+
     private void checkBoxCompanionAction () {
         boolean checked = this.chbCompanion.isSelected();
 
         this.lblCompanionName.setDisable(!checked);
         this.txfCompanionName.setDisable(!checked);
-        this.lblCompanionTelephone.setDisable(!checked);
-        this.txfCompanionTelephone.setDisable(!checked);
         this.lblExcursions.setDisable(!checked);
         this.lvwExcursions.setDisable(!checked);
     }
 
-    private void selectedExcursionChanged (Excursion newExcursion) {
-        // TODO
+    private void checkBoxHotelAction () {
+        boolean checked = this.chbHotel.isSelected();
+
+        this.lblDouble.setDisable(!checked);
+        this.lvwHotels.setDisable(!checked);
+        this.lblHotels.setDisable(!checked);
+        this.lblAddOns.setDisable(!checked);
+        this.lvwAddOns.setDisable(!checked);
     }
 
     // --------------------------------------------------------------
@@ -218,6 +270,7 @@ public class RegistrationPane extends GridPane {
         this.restrictDatePicker(this.dtpEnd, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
 
         this.lvwExcursions.getItems().setAll(this.conference.getExcursions());
+        this.lvwHotels.getItems().setAll(this.conference.getHotels());
     }
 
     // --------------------------------------------------------------
