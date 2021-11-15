@@ -1,0 +1,9 @@
+.text-field.error {
+    -fx-text-box-border: red;
+    -fx-focus-color: red;
+}
+
+.text-field.valid {
+    -fx-text-box-border: green;
+    -fx-focus-color: green;
+}

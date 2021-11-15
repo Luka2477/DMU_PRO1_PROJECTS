@@ -30,6 +30,7 @@ public class RegistrationPane extends GridPane {
     private final CheckBox chbSpeaker, chbCompanion, chbHotel;
     private final DatePicker dtpStart, dtpEnd;
     private final Label lblCompanionName, lblExcursions, lblHotels, lblAddOns, lblDouble;
+    private final Button btnClear, btnSubmit;
 
     public RegistrationPane () {
         this.setPadding(new Insets(10));
@@ -73,6 +74,7 @@ public class RegistrationPane extends GridPane {
 
         this.txfName = new TextField();
         this.participantGridPane.add(this.txfName, 1, 1);
+        this.stringValidation(this.txfName);
 
         Label lblSpeaker = new Label("Foredragsholder");
         this.chbSpeaker = new CheckBox();
@@ -85,24 +87,28 @@ public class RegistrationPane extends GridPane {
 
         this.txfAddress = new TextField();
         this.participantGridPane.add(this.txfAddress, 1, 2);
+        this.stringValidation(this.txfAddress);
 
         Label lblCity = new Label("By:");
         this.participantGridPane.add(lblCity, 2, 2);
 
         this.txfCity = new TextField();
         this.participantGridPane.add(this.txfCity, 3, 2);
+        this.stringValidation(this.txfCity);
 
         Label lblCountry = new Label("Land:");
         this.participantGridPane.add(lblCountry, 0, 3);
 
         this.txfCountry = new TextField();
         this.participantGridPane.add(this.txfCountry, 1, 3);
+        this.stringValidation(this.txfCountry);
 
         Label lblTelephone = new Label("Tlf.nr.");
         this.participantGridPane.add(lblTelephone, 2, 3);
 
         this.txfTelephone = new TextField();
         this.participantGridPane.add(this.txfTelephone, 3, 3);
+        this.numberValidation(this.txfTelephone);
 
         Label lblStartDate = new Label("Ankomstdato:");
         this.participantGridPane.add(lblStartDate, 0, 4);
@@ -125,12 +131,14 @@ public class RegistrationPane extends GridPane {
 
         this.txfCompanyName = new TextField();
         this.participantGridPane.add(this.txfCompanyName, 1, 6);
+        this.stringValidation(this.txfCompanyName);
 
         Label lblCompanyTelephone = new Label("Firma tlf.nr.");
         this.participantGridPane.add(lblCompanyTelephone, 2, 6);
 
         this.txfCompanyTelephone = new TextField();
         this.participantGridPane.add(this.txfCompanyTelephone, 3, 6);
+        this.numberValidation(this.txfCompanyTelephone);
 
         // --------------------------------------------------------------
 
@@ -159,6 +167,7 @@ public class RegistrationPane extends GridPane {
         this.txfCompanionName = new TextField();
         this.txfCompanionName.setDisable(true);
         this.companionGridPane.add(this.txfCompanionName, 3, 1);
+        this.stringValidation(this.txfCompanionName);
 
         this.lblExcursions = new Label("Udflugter");
         this.lblExcursions.setFont(new Font(15));
@@ -191,7 +200,7 @@ public class RegistrationPane extends GridPane {
         GridPane.setHalignment(lblHotel, HPos.CENTER);
         this.hotelGridPane.add(lblHotel, 0, 1, 2, 1);
 
-        this.lblHotels = new Label("Hoteler");
+        this.lblHotels = new Label("Hoteller");
         this.lblHotels.setFont(new Font(15));
         this.lblHotels.setDisable(true);
         this.hotelGridPane.add(this.lblHotels, 0, 2);
@@ -222,24 +231,38 @@ public class RegistrationPane extends GridPane {
 
         // --------------------------------------------------------------
 
+        this.btnClear = new Button("Start forfra");
+        this.btnClear.setOnAction(event -> this.clearControls());
+        GridPane.setHalignment(this.btnClear, HPos.RIGHT);
+        this.add(this.btnClear, 0, 3);
 
+        this.btnSubmit = new Button("Send registration");
+        this.btnSubmit.setOnAction(event -> this.submitAction());
+        this.add(this.btnSubmit, 1, 3);
     }
 
     // --------------------------------------------------------------
 
     private void selectedConferenceChanged (Conference newConference) {
-        if (this.participantGridPane.isDisable()) {
-            this.participantGridPane.setDisable(false);
-            this.companionGridPane.setDisable(false);
-            this.hotelGridPane.setDisable(false);
-        }
+        boolean isNull = newConference == null;
+
+        this.participantGridPane.setDisable(isNull);
+        this.companionGridPane.setDisable(isNull);
+        this.hotelGridPane.setDisable(isNull);
 
         this.conference = newConference;
-        this.updateControls();
+
+        if (!isNull) {
+            this.updateControls();
+        }
     }
 
     private void selectedHotelChanged (Hotel newHotel) {
-        this.lvwAddOns.getItems().setAll(newHotel.getAddOns());
+        if (newHotel != null) {
+            this.lvwAddOns.getItems().setAll(newHotel.getAddOns());
+        } else {
+            this.lvwAddOns.getItems().clear();
+        }
     }
 
     private void checkBoxCompanionAction () {
@@ -263,7 +286,7 @@ public class RegistrationPane extends GridPane {
 
     // --------------------------------------------------------------
 
-    public void updateControls () {
+    private void updateControls () {
         this.dtpStart.setValue(this.conference.getStartDate().toLocalDate());
         this.dtpEnd.setValue(this.conference.getEndDate().toLocalDate());
         this.restrictDatePicker(this.dtpStart, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
@@ -271,6 +294,44 @@ public class RegistrationPane extends GridPane {
 
         this.lvwExcursions.getItems().setAll(this.conference.getExcursions());
         this.lvwHotels.getItems().setAll(this.conference.getHotels());
+    }
+
+    private void clearControls () {
+        this.lvwConferences.getSelectionModel().clearSelection();
+        this.lvwExcursions.getItems().clear();
+        this.lvwHotels.getItems().clear();
+        this.lvwAddOns.getItems().clear();
+
+        this.chbHotel.setSelected(false);
+        this.chbCompanion.setSelected(false);
+        this.chbSpeaker.setSelected(false);
+
+        this.dtpStart.setValue(null);
+        this.dtpEnd.setValue(null);
+
+        this.txfName.clear();
+        this.txfAddress.clear();
+        this.txfCity.clear();
+        this.txfCountry.clear();
+        this.txfTelephone.clear();
+        this.txfCompanyName.clear();
+        this.txfCompanyTelephone.clear();
+        this.txfCompanionName.clear();
+
+        App.removeClass(this.txfName, "error");
+        App.removeClass(this.txfAddress, "error");
+        App.removeClass(this.txfCity, "error");
+        App.removeClass(this.txfCountry, "error");
+        App.removeClass(this.txfTelephone, "error");
+        App.removeClass(this.txfCompanyName, "error");
+        App.removeClass(this.txfCompanyTelephone, "error");
+        App.removeClass(this.txfCompanionName, "error");
+    }
+
+    // --------------------------------------------------------------
+
+    private void submitAction () {
+        // TODO
     }
 
     // --------------------------------------------------------------
@@ -281,6 +342,32 @@ public class RegistrationPane extends GridPane {
                 super.updateItem(date, empty);
 
                 setDisable(empty || date.compareTo(startDate) < 0 || date.compareTo(endDate) > 0);
+            }
+        });
+    }
+
+    private void stringValidation (final TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String text = newValue.trim();
+            if (text.length() == 0) {
+                App.removeClass(textField, "valid");
+                App.addClass(textField, "error");
+            } else {
+                App.removeClass(textField, "error");
+                App.addClass(textField, "valid");
+            }
+        });
+    }
+
+    private void numberValidation (final TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String text = newValue.trim();
+            if (text.length() != 8) {
+                App.removeClass(textField, "valid");
+                App.addClass(textField, "error");
+            } else {
+                App.removeClass(textField, "error");
+                App.addClass(textField, "valid");
             }
         });
     }

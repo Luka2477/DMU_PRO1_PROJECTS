@@ -22,6 +22,7 @@ public class StartWindow extends Application {
         this.initContent(pane);
 
         Scene scene = new Scene(pane);
+        scene.getStylesheets().add(getClass().getResource("stylesheets/textField.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
