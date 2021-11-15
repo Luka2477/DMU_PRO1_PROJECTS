@@ -8,17 +8,23 @@ import application.model.Hotel;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RegistrationPane extends GridPane {
 
     private Conference conference;
+    private Hotel hotel;
 
     private final GridPane conferencesGridPane, participantGridPane, companionGridPane, hotelGridPane;
 
@@ -26,7 +32,8 @@ public class RegistrationPane extends GridPane {
     private final ListView<Excursion> lvwExcursions;
     private final ListView<Hotel> lvwHotels;
     private final ListView<AddOn> lvwAddOns;
-    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone, txfCompanyName, txfCompanyTelephone, txfCompanionName;
+    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone;
+    private final TextField txfCompanyName, txfCompanyTelephone, txfCompanionName, txfPrice;
     private final CheckBox chbSpeaker, chbCompanion, chbHotel;
     private final DatePicker dtpStart, dtpEnd;
     private final Label lblCompanionName, lblExcursions, lblHotels, lblAddOns, lblDouble;
@@ -180,6 +187,9 @@ public class RegistrationPane extends GridPane {
         this.lvwExcursions.setDisable(true);
         this.companionGridPane.add(this.lvwExcursions, 0, 3, 4, 1);
 
+        ChangeListener<Excursion> listenerExcursions = (ov, oldExcursion, newExcursion) -> this.selectedExcursionChanged();
+        this.lvwExcursions.getSelectionModel().selectedItemProperty().addListener(listenerExcursions);
+
         // --------------------------------------------------------------
 
         this.hotelGridPane = new GridPane();
@@ -224,6 +234,9 @@ public class RegistrationPane extends GridPane {
         this.lvwAddOns.setDisable(true);
         this.hotelGridPane.add(this.lvwAddOns, 1, 3);
 
+        ChangeListener<AddOn> listenerAddOns = (ov, oldAddOn, newAddOn) -> this.selectedAddOnChanged();
+        this.lvwAddOns.getSelectionModel().selectedItemProperty().addListener(listenerAddOns);
+
         this.lblDouble = new Label("Bemærk at såfremt du medbringer en ledsager tildeles i automatisk et dobbeltværelse");
         this.lblDouble.setWrapText(true);
         this.lblDouble.setDisable(true);
@@ -232,13 +245,24 @@ public class RegistrationPane extends GridPane {
         // --------------------------------------------------------------
 
         this.btnClear = new Button("Start forfra");
+        this.btnClear.setDisable(true);
         this.btnClear.setOnAction(event -> this.clearControls());
         GridPane.setHalignment(this.btnClear, HPos.RIGHT);
         this.add(this.btnClear, 0, 3);
 
+        HBox hbox = new HBox();
+        this.add(hbox, 1, 3);
+
         this.btnSubmit = new Button("Send registration");
+        this.btnSubmit.setDisable(true);
         this.btnSubmit.setOnAction(event -> this.submitAction());
-        this.add(this.btnSubmit, 1, 3);
+        hbox.getChildren().add(this.btnSubmit);
+
+        Label lblPrice = new Label("Samlet pris:");
+        hbox.getChildren().add(lblPrice);
+
+        this.txfPrice = new TextField();
+        hbox.getChildren().add(this.txfPrice);
     }
 
     // --------------------------------------------------------------
@@ -249,20 +273,41 @@ public class RegistrationPane extends GridPane {
         this.participantGridPane.setDisable(isNull);
         this.companionGridPane.setDisable(isNull);
         this.hotelGridPane.setDisable(isNull);
+        this.btnSubmit.setDisable(isNull);
+        this.btnClear.setDisable(isNull);
 
         this.conference = newConference;
 
         if (!isNull) {
-            this.updateControls();
+            this.dtpStart.setValue(this.conference.getStartDate().toLocalDate());
+            this.dtpEnd.setValue(this.conference.getEndDate().toLocalDate());
+            this.restrictDatePicker(this.dtpStart, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
+            this.restrictDatePicker(this.dtpEnd, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
+
+            this.lvwExcursions.getItems().setAll(this.conference.getExcursions());
+            this.lvwHotels.getItems().setAll(this.conference.getHotels());
         }
+
+        this.updateControls();
+    }
+
+    private void selectedExcursionChanged () {
+        this.updateControls();
     }
 
     private void selectedHotelChanged (Hotel newHotel) {
+        this.hotel = newHotel;
         if (newHotel != null) {
             this.lvwAddOns.getItems().setAll(newHotel.getAddOns());
         } else {
             this.lvwAddOns.getItems().clear();
         }
+
+        this.updateControls();
+    }
+
+    private void selectedAddOnChanged () {
+        this.updateControls();
     }
 
     private void checkBoxCompanionAction () {
@@ -272,6 +317,10 @@ public class RegistrationPane extends GridPane {
         this.txfCompanionName.setDisable(!checked);
         this.lblExcursions.setDisable(!checked);
         this.lvwExcursions.setDisable(!checked);
+
+        if (!checked) {
+            this.lvwExcursions.getSelectionModel().clearSelection();
+        }
     }
 
     private void checkBoxHotelAction () {
@@ -282,18 +331,36 @@ public class RegistrationPane extends GridPane {
         this.lblHotels.setDisable(!checked);
         this.lblAddOns.setDisable(!checked);
         this.lvwAddOns.setDisable(!checked);
+
+        if (!checked) {
+            this.lvwHotels.getSelectionModel().clearSelection();
+        }
     }
 
     // --------------------------------------------------------------
 
     private void updateControls () {
-        this.dtpStart.setValue(this.conference.getStartDate().toLocalDate());
-        this.dtpEnd.setValue(this.conference.getEndDate().toLocalDate());
-        this.restrictDatePicker(this.dtpStart, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
-        this.restrictDatePicker(this.dtpEnd, this.conference.getStartDate().toLocalDate(), this.conference.getEndDate().toLocalDate());
+        int stayInDays = (int) ChronoUnit.DAYS.between(this.dtpStart.getValue(), this.dtpEnd.getValue());
+        int conferencePrice = this.conference.getDailyPrice() * stayInDays;
 
-        this.lvwExcursions.getItems().setAll(this.conference.getExcursions());
-        this.lvwHotels.getItems().setAll(this.conference.getHotels());
+        int hotelPrice = 0;
+        if (this.hotel != null) {
+            int addOnPrice = 0;
+            for (AddOn addOn : this.lvwAddOns.getSelectionModel().getSelectedItems()) {
+                addOnPrice += addOn.getPrice();
+            }
+
+            hotelPrice = (((this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice()) + addOnPrice) * stayInDays;
+        }
+
+        int excursionPrice = 0;
+        if (this.chbCompanion.isSelected()) {
+            for (Excursion excursion : this.lvwExcursions.getSelectionModel().getSelectedItems()) {
+                excursionPrice += excursion.getPrice();
+            }
+        }
+
+        this.txfPrice.setText(conferencePrice + hotelPrice + excursionPrice + "");
     }
 
     private void clearControls () {
@@ -317,6 +384,7 @@ public class RegistrationPane extends GridPane {
         this.txfCompanyName.clear();
         this.txfCompanyTelephone.clear();
         this.txfCompanionName.clear();
+        this.txfPrice.clear();
 
         App.removeClass(this.txfName, "error");
         App.removeClass(this.txfAddress, "error");
@@ -332,6 +400,24 @@ public class RegistrationPane extends GridPane {
 
     private void submitAction () {
         // TODO
+        ArrayList<TextField> errorableTextFields = new ArrayList<>(Arrays.asList(
+                this.txfName, this.txfAddress, this.txfCity, this.txfCountry, this.txfTelephone,
+                this.txfCompanyName, this.txfCompanyTelephone, this.txfCompanionName));
+        for (TextField textField : errorableTextFields) {
+            if (textField.getStyleClass().contains("error")) {
+                return;
+            }
+        }
+
+        String name = this.txfName.getText().trim();
+        String address = this.txfAddress.getText().trim();
+        String city = this.txfCity.getText().trim();
+        String country = this.txfCountry.getText().trim();
+        String telephone = this.txfTelephone.getText().trim();
+        String companyName = this.txfCompanyName.getText().trim();
+        String companyTelephone = this.txfCompanyTelephone.getText().trim();
+        String companionName = this.txfCompanionName.getText().trim();
+
     }
 
     // --------------------------------------------------------------
