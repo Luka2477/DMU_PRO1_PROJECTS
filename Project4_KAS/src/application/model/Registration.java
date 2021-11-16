@@ -1,14 +1,14 @@
 package application.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Registration {
 
     private String companyName;
     private String companyTelephone;
-    private LocalDateTime arrivalDate;
-    private LocalDateTime departureDate;
+    private LocalDate arrivalDate;
+    private LocalDate departureDate;
     private boolean speaker;
 
     private HotelRoom hotelRoom;
@@ -17,15 +17,16 @@ public class Registration {
     private Conference conference;
 
     public Registration (Participant participant, String companyName,
-                         String companyTelephone, LocalDateTime arrivalDate,
-                         LocalDateTime departureDate, boolean speaker, Conference conference) {
+                         String companyTelephone, LocalDate arrivalDate,
+                         LocalDate departureDate, boolean speaker, Conference conference) {
         this.participant = participant;
         this.companyName = companyName;
         this.companyTelephone = companyTelephone;
         this.arrivalDate = arrivalDate;
         this.departureDate = departureDate;
         this.speaker = speaker;
-        this.conference = conference;
+
+        this.setConference(conference);
     }
 
     // ------------------------------------------------------------------------------
@@ -46,19 +47,19 @@ public class Registration {
         this.companyTelephone = companyTelephone;
     }
 
-    public LocalDateTime getArrivalDate() {
+    public LocalDate getArrivalDate() {
         return this.arrivalDate;
     }
 
-    public void setArrivalDate(LocalDateTime arrivalDate) {
+    public void setArrivalDate(LocalDate arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
 
-    public LocalDateTime getDepartureDate() {
+    public LocalDate getDepartureDate() {
         return this.departureDate;
     }
 
-    public void setDepartureDate(LocalDateTime departureDate) {
+    public void setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 
@@ -108,8 +109,8 @@ public class Registration {
 
     // ------------------------------------------------------------------------------
 
-    public Companion createCompanion (String name, int age, String telephone) {
-        Companion companion = new Companion(name, age, telephone);
+    public Companion createCompanion (String name) {
+        Companion companion = new Companion(name);
         this.companion = companion;
         return companion;
     }
@@ -122,7 +123,7 @@ public class Registration {
 
     public double calulateTotalPrice () {
         int daysOfStay = (int) ChronoUnit.DAYS.between(this.arrivalDate, this.departureDate);
-        double sum = (this.hotelRoom.getPrice() + this.conference.getDailyPrice()) * daysOfStay + this.hotelRoom.calculateAddOnPrice();
+        double sum = (this.hotelRoom.getPrice() + this.conference.getDailyPrice() + this.hotelRoom.calculateAddOnPrice()) * daysOfStay;
 
         if (this.companion != null) {
             sum += this.companion.calculateExcursionsPrice();

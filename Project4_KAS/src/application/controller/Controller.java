@@ -1,9 +1,6 @@
 package application.controller;
 
-import application.model.AddOn;
-import application.model.Conference;
-import application.model.Excursion;
-import application.model.Hotel;
+import application.model.*;
 import storage.Storage;
 
 import java.time.LocalDateTime;
@@ -56,7 +53,17 @@ public abstract class Controller {
         return Storage.getConferences();
     }
 
+    // --------------------------------------------------------------
+
     public static ArrayList<Excursion> getExcursions () {
         return Storage.getExcursions();
+    }
+
+    // --------------------------------------------------------------
+
+    public static Participant createParticipant (String name, String telephone, String address, String country, String city) {
+        Participant participant = new Participant(name, telephone, address, country, city);
+        Storage.addParticipant(participant);
+        return participant;
     }
 }

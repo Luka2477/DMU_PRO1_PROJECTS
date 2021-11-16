@@ -1,10 +1,7 @@
 package gui;
 
 import application.controller.Controller;
-import application.model.AddOn;
-import application.model.Conference;
-import application.model.Excursion;
-import application.model.Hotel;
+import application.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -288,11 +285,11 @@ public class RegistrationPane extends GridPane {
             this.lvwHotels.getItems().setAll(this.conference.getHotels());
         }
 
-        this.updateControls();
+        this.updatePrice();
     }
 
     private void selectedExcursionChanged () {
-        this.updateControls();
+        this.updatePrice();
     }
 
     private void selectedHotelChanged (Hotel newHotel) {
@@ -303,11 +300,11 @@ public class RegistrationPane extends GridPane {
             this.lvwAddOns.getItems().clear();
         }
 
-        this.updateControls();
+        this.updatePrice();
     }
 
     private void selectedAddOnChanged () {
-        this.updateControls();
+        this.updatePrice();
     }
 
     private void checkBoxCompanionAction () {
@@ -339,28 +336,30 @@ public class RegistrationPane extends GridPane {
 
     // --------------------------------------------------------------
 
-    private void updateControls () {
-        int stayInDays = (int) ChronoUnit.DAYS.between(this.dtpStart.getValue(), this.dtpEnd.getValue());
-        int conferencePrice = this.conference.getDailyPrice() * stayInDays;
+    private void updatePrice () {
+        if (this.conference != null) {
+            int stayInDays = (int) ChronoUnit.DAYS.between(this.dtpStart.getValue(), this.dtpEnd.getValue());
+            int conferencePrice = this.conference.getDailyPrice() * stayInDays;
 
-        int hotelPrice = 0;
-        if (this.hotel != null) {
-            int addOnPrice = 0;
-            for (AddOn addOn : this.lvwAddOns.getSelectionModel().getSelectedItems()) {
-                addOnPrice += addOn.getPrice();
+            int hotelPrice = 0;
+            if (this.hotel != null) {
+                int addOnPrice = 0;
+                for (AddOn addOn : this.lvwAddOns.getSelectionModel().getSelectedItems()) {
+                    addOnPrice += addOn.getPrice();
+                }
+
+                hotelPrice = (((this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice()) + addOnPrice) * stayInDays;
             }
 
-            hotelPrice = (((this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice()) + addOnPrice) * stayInDays;
-        }
-
-        int excursionPrice = 0;
-        if (this.chbCompanion.isSelected()) {
-            for (Excursion excursion : this.lvwExcursions.getSelectionModel().getSelectedItems()) {
-                excursionPrice += excursion.getPrice();
+            int excursionPrice = 0;
+            if (this.chbCompanion.isSelected()) {
+                for (Excursion excursion : this.lvwExcursions.getSelectionModel().getSelectedItems()) {
+                    excursionPrice += excursion.getPrice();
+                }
             }
-        }
 
-        this.txfPrice.setText(conferencePrice + hotelPrice + excursionPrice + "");
+            this.txfPrice.setText(conferencePrice + hotelPrice + excursionPrice + "");
+        }
     }
 
     private void clearControls () {
@@ -418,6 +417,42 @@ public class RegistrationPane extends GridPane {
         String companyTelephone = this.txfCompanyTelephone.getText().trim();
         String companionName = this.txfCompanionName.getText().trim();
 
+        boolean speaker = this.chbSpeaker.isSelected();
+
+        LocalDate arrivalDate = this.dtpStart.getValue();
+        LocalDate departureDate = this.dtpEnd.getValue();
+
+        Participant participant = Controller.createParticipant(name, telephone, address, country, city);
+        Registration registration = participant.createRegistration(companyName, companyTelephone, arrivalDate, departureDate, speaker, this.conference);
+
+        if (this.chbCompanion.isSelected()) {
+            Companion companion = registration.createCompanion(companionName);
+
+            for (Excursion excursion : this.lvwExcursions.getSelectionModel().getSelectedItems()) {
+                companion.addExcursion(excursion);
+            }
+        }
+
+        if (this.chbHotel.isSelected()) {
+            // TODO Change the number to automatically update
+            HotelRoom hotelRoom = this.hotel.createHotelRoom(1,
+                    (this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice(),
+                    !this.chbCompanion.isSelected());
+
+            for (AddOn addOn : this.lvwAddOns.getSelectionModel().getSelectedItems()) {
+                hotelRoom.addAddOn(addOn);
+            }
+
+            registration.setHotelRoom(hotelRoom);
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Registrering gennemført!");
+        alert.setHeaderText("Registrering gennemført!");
+        alert.setContentText("Tak for at du registrerede dig til " + this.conference.getName() + " " + participant.getName() + "! Hav en god dag");
+        alert.showAndWait();
+
+        this.clearControls();
     }
 
     // --------------------------------------------------------------

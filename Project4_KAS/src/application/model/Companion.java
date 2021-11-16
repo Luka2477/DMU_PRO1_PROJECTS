@@ -7,8 +7,8 @@ public class Companion extends Person {
 
     private ArrayList<Excursion> excursions = new ArrayList<>();
 
-    public Companion (String name, int age, String telephone) {
-        super(name, age, telephone);
+    public Companion (String name) {
+        super(name);
     }
 
     // ------------------------------------------------------------------------------
