@@ -1,6 +1,6 @@
 package gui;
 
-import application.model.Hotel;
+import application.model.Registration;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,14 +9,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AdminCreateHotelWindow extends Stage {
+public class AdminUpdateRegistrationWindow extends Stage {
 
-    private final Hotel hotel;
+    private final Registration registration;
 
-    AdminCreateHotelWindow (Hotel hotel) {
+    AdminUpdateRegistrationWindow (Registration registration) {
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
-        this.setTitle("Opret hotel - KAS");
+        this.setTitle("Opdatere konference - KAS");
 
         GridPane pane = new GridPane();
         this.initContent(pane);
@@ -24,11 +24,7 @@ public class AdminCreateHotelWindow extends Stage {
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
-        this.hotel = hotel;
-    }
-
-    AdminCreateHotelWindow () {
-        this(null);
+        this.registration = registration;
     }
 
     // -------------------------------------------------------------------------
@@ -49,9 +45,9 @@ public class AdminCreateHotelWindow extends Stage {
         btnCancel.setOnAction(event -> this.cancelAction());
         pane.add(btnCancel, 0, 1);
 
-        Button btnSaveCreate = new Button((this.hotel != null) ? "Gem" : "Opret");
-        btnSaveCreate.setOnAction(event -> this.saveCreateAction());
-        pane.add(btnSaveCreate, 1, 1);
+        Button btnSave = new Button("Gem");
+        btnSave.setOnAction(event -> this.saveAction());
+        pane.add(btnSave, 1, 1);
     }
 
     // -------------------------------------------------------------------------
@@ -60,14 +56,9 @@ public class AdminCreateHotelWindow extends Stage {
         this.hide();
     }
 
-    private void saveCreateAction () {
+    private void saveAction () {
         // TODO get data
 
-        if (this.hotel != null) {
-            // TODO update the addOn
-        } else {
-            // TODO create the addOn
-        }
+        // TODO update the registration
     }
-
 }

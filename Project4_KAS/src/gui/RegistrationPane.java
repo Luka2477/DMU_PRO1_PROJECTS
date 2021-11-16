@@ -117,12 +117,14 @@ public class RegistrationPane extends GridPane {
         this.participantGridPane.add(lblStartDate, 0, 4);
 
         this.dtpStart = new DatePicker();
+        this.dtpStart.valueProperty().addListener((ov, oldValue, newValue) -> this.datePickerChanged());
         this.participantGridPane.add(this.dtpStart, 1, 4);
 
         Label lblEndDate = new Label("Afrejsedato:");
         this.participantGridPane.add(lblEndDate, 2, 4);
 
         this.dtpEnd = new DatePicker();
+        this.dtpEnd.valueProperty().addListener((ov, oldValue, newValue) -> this.datePickerChanged());
         this.participantGridPane.add(this.dtpEnd, 3, 4);
 
         Label lblCompany = new Label("Deltager du i forbindelse med arbejde, indtast venligst nedenstående");
@@ -333,6 +335,10 @@ public class RegistrationPane extends GridPane {
         }
     }
 
+    private void datePickerChanged () {
+        this.updatePrice();
+    }
+
     // --------------------------------------------------------------
 
     private void updatePrice () {
@@ -397,7 +403,6 @@ public class RegistrationPane extends GridPane {
     // --------------------------------------------------------------
 
     private void submitAction () {
-        // TODO
         ArrayList<TextField> errorableTextFields = new ArrayList<>(Arrays.asList(
                 this.txfName, this.txfAddress, this.txfCity, this.txfCountry, this.txfTelephone,
                 this.txfCompanyName, this.txfCompanyTelephone, this.txfCompanionName));
