@@ -32,6 +32,10 @@ public class AddOn {
 
     @Override
     public String toString () {
-        return (this.price == 0) ? "Alle med " + this.name : String.format("Tillæg kr. %d for %s", this.price, this.name);
+        if (this.price == 0) {
+            return "Alle med " + this.name;
+        } else {
+            return String.format("Tillæg kr. %d for %s", this.price, this.name);
+        }
     }
 }
