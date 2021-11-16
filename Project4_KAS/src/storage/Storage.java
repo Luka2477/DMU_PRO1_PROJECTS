@@ -73,7 +73,31 @@ public abstract class Storage {
         Storage.participants.add(participant);
     }
 
+    public static void addParticipants (Participant... participants) {
+        Storage.participants.addAll(Arrays.asList(participants));
+    }
+
+    public static void removeParticipant (Participant participant) {
+        Storage.participants.remove(participant);
+    }
+
+    public static ArrayList<Participant> getParticipants (Participant participant) {
+        return new ArrayList<>(Storage.participants);
+    }
+
     // --------------------------------------------------------------
+
+    public static void addRegistration (Registration registration) {
+        Storage.registrations.add(registration);
+    }
+
+    public static void addRegistrations (Registration... registrations) {
+        Storage.registrations.addAll(Arrays.asList(registrations));
+    }
+
+    public static void removeRegistration (Registration registration) {
+        Storage.registrations.remove(registration);
+    }
 
     public static ArrayList<Registration> getRegistrations () {
         return new ArrayList<>(Storage.registrations);
