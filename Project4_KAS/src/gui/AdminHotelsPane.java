@@ -1,7 +1,6 @@
 package gui;
 
 import application.controller.Controller;
-import application.model.Conference;
 import application.model.Hotel;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;

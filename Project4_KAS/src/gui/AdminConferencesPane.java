@@ -3,7 +3,6 @@ package gui;
 import application.controller.Controller;
 import application.model.Conference;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
