@@ -89,6 +89,10 @@ public abstract class Controller {
         registration.getParticipant().removeRegistration(registration);
     }
 
+    public static ArrayList<Registration> getRegistrations () {
+        return Storage.getRegistrations();
+    }
+
     // --------------------------------------------------------------
 
     public static Hotel createHotel (String name, String address, int singlePrice, int doublePrice) {

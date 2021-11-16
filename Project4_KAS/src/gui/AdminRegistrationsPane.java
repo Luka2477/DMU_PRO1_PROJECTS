@@ -31,7 +31,7 @@ public class AdminRegistrationsPane extends GridPane {
 
         // --------------------------------------------------------------
 
-        // TODO
+        // TODO GUI
 
         // --------------------------------------------------------------
 
@@ -60,6 +60,7 @@ public class AdminRegistrationsPane extends GridPane {
 
     private void updateControls () {
         // TODO update data
+        this.lvwRegistrations.getItems().setAll(Controller.getRegistrations());
     }
 
     // --------------------------------------------------------------

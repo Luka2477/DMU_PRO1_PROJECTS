@@ -65,9 +65,9 @@ public class AdminCreateConferenceWindow extends Stage {
         // TODO get data
 
         if (this.conference != null) {
-            // TODO update the addOn
+            // TODO update the conference
         } else {
-            // TODO create the addOn
+            // TODO create the conference
         }
     }
 
