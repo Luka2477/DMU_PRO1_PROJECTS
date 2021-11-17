@@ -123,12 +123,25 @@ public class Registration {
 
     public double calulateTotalPrice () {
         int daysOfStay = (int) ChronoUnit.DAYS.between(this.arrivalDate, this.departureDate);
-        double sum = (this.hotelRoom.getPrice() + this.conference.getDailyPrice() + this.hotelRoom.calculateAddOnPrice()) * daysOfStay;
+        double sum = this.conference.getDailyPrice();
+
+        if (this.hotelRoom != null) {
+            sum += this.getHotelRoom().getPrice() + this.getHotelRoom().calculateAddOnPrice();
+        }
+
+        sum *= daysOfStay;
 
         if (this.companion != null) {
             sum += this.companion.calculateExcursionsPrice();
         }
 
         return sum;
+    }
+
+    // ------------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        return String.format("Konference: %s%nDeltager: %s", this.conference.getName(), this.participant.getName());
     }
 }

@@ -77,13 +77,14 @@ public class Hotel {
     // ----------------------------------------------------------------------------
 
     public HotelRoom createHotelRoom (int nr, int price, boolean isSingle) {
-        HotelRoom hotelRoom = new HotelRoom(nr, price, isSingle);
+        HotelRoom hotelRoom = new HotelRoom(nr, price, isSingle, this);
         this.hotelRooms.add(hotelRoom);
         return hotelRoom;
     }
 
     public void removeHotelRoom (HotelRoom hotelRoom) {
         this.hotelRooms.remove(hotelRoom);
+        hotelRoom.removeHotel();
     }
 
     public ArrayList<HotelRoom> getHotelRooms () {

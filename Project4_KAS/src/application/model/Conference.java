@@ -154,7 +154,7 @@ public class Conference {
     public String toString () {
         DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("dd-MM @ HH:mm");
         DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("dd-MM-yyyy @ HH:mm");
-        return String.format("%s konference.%n%s - %s på %s.%nTilmeldingsfrist: %s",
-                this.name, this.startDate.format(dtf1), this.endDate.format(dtf2), this.address, this.deadline.format(dtf1));
+        return String.format("%s konference.%n%s - %s på %s.%nTilmeldingsfrist: %s%nDagspris: %d",
+                this.name, this.startDate.format(dtf1), this.endDate.format(dtf2), this.address, this.deadline.format(dtf1), this.dailyPrice);
     }
 }

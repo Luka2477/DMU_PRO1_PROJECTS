@@ -7,13 +7,15 @@ public class HotelRoom {
     private int nr;
     private int price;
     private boolean single;
+    private Hotel hotel;
 
     private ArrayList<AddOn> addOns = new ArrayList<>();
 
-    public HotelRoom (int nr, int price, boolean single) {
+    public HotelRoom (int nr, int price, boolean single, Hotel hotel) {
         this.nr = nr;
         this.price = price;
         this.single = single;
+        this.hotel = hotel;
     }
 
     // -------------------------------------------------------------------------------
@@ -56,6 +58,16 @@ public class HotelRoom {
 
     public ArrayList<AddOn> getAddOns () {
         return new ArrayList<>(this.addOns);
+    }
+
+    // -------------------------------------------------------------------------------
+
+    public void removeHotel () {
+        this.hotel = null;
+    }
+
+    public Hotel getHotel () {
+        return this.hotel;
     }
 
     // -------------------------------------------------------------------------------

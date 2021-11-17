@@ -83,10 +83,23 @@ public abstract class Controller {
         return participant;
     }
 
+    public static void removeParticipant (Participant participant) {
+        Storage.removeParticipant(participant);
+    }
+
+    public static ArrayList<Participant> getParticipants () {
+        return Storage.getParticipants();
+    }
+
     // --------------------------------------------------------------
+
+    public static void addRegistration (Registration registration) {
+        Storage.addRegistration(registration);
+    }
 
     public static void removeRegistration (Registration registration) {
         registration.getParticipant().removeRegistration(registration);
+        Storage.removeRegistration(registration);
     }
 
     public static ArrayList<Registration> getRegistrations () {
@@ -102,6 +115,16 @@ public abstract class Controller {
     }
 
     public static void removeHotel (Hotel hotel) {
+        for (Conference conference : hotel.getConferences()) {
+            conference.removeHotel(hotel);
+        }
+
+        for (Registration registration : Storage.getRegistrations()) {
+            if (registration.getHotelRoom().getHotel() == hotel) {
+                registration.setHotelRoom(null);
+            }
+        }
+
         Storage.removeHotel(hotel);
     }
 }

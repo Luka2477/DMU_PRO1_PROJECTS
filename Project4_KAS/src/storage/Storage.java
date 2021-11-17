@@ -81,7 +81,7 @@ public abstract class Storage {
         Storage.participants.remove(participant);
     }
 
-    public static ArrayList<Participant> getParticipants (Participant participant) {
+    public static ArrayList<Participant> getParticipants () {
         return new ArrayList<>(Storage.participants);
     }
 

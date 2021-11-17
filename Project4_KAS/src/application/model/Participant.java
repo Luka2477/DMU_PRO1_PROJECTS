@@ -1,5 +1,7 @@
 package application.model;
 
+import application.controller.Controller;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -62,6 +64,7 @@ public class Participant extends Person {
         Registration registration = new Registration(
                 this, companyName, companyTelephone, arrivalDate, departureDate, speaker, conference);
         this.registrations.add(registration);
+        Controller.addRegistration(registration);
         return registration;
     }
 
