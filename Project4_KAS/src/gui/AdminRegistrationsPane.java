@@ -3,15 +3,12 @@ package gui;
 import application.controller.Controller;
 import application.model.AddOn;
 import application.model.Excursion;
-import application.model.Participant;
 import application.model.Registration;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 import java.time.format.DateTimeFormatter;
 
@@ -151,7 +148,6 @@ public class AdminRegistrationsPane extends GridPane {
         // --------------------------------------------------------------
 
         this.updateRegistrations();
-        this.updateControls();
     }
 
     // --------------------------------------------------------------
@@ -225,10 +221,13 @@ public class AdminRegistrationsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateAction () {
-        AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.lvwRegistrations.getSelectionModel().getSelectedItem());
-        adminUpdateRegistrationWindow.showAndWait();
+        if (this.registration != null) {
+            AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.lvwRegistrations.getSelectionModel().getSelectedItem());
+            adminUpdateRegistrationWindow.showAndWait();
 
-        this.updateControls();
+            this.updateRegistrations();
+            this.clearControls();
+        }
     }
 
     private void deleteAction () {

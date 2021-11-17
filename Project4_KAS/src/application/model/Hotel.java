@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Hotel {
 
+    private static int nr = 0;
+
     private String name;
     private String address;
     private int singlePrice;
@@ -76,8 +78,9 @@ public class Hotel {
 
     // ----------------------------------------------------------------------------
 
-    public HotelRoom createHotelRoom (int nr, int price, boolean isSingle) {
-        HotelRoom hotelRoom = new HotelRoom(nr, price, isSingle, this);
+    public HotelRoom createHotelRoom (int price, boolean isSingle) {
+        HotelRoom hotelRoom = new HotelRoom(Hotel.nr, price, isSingle, this);
+        Hotel.nr++;
         this.hotelRooms.add(hotelRoom);
         return hotelRoom;
     }

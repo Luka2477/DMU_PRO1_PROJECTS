@@ -370,8 +370,11 @@ public class RegistrationPane extends GridPane {
     private void clearControls () {
         this.lvwConferences.getSelectionModel().clearSelection();
         this.lvwExcursions.getItems().clear();
+        this.lvwExcursions.setDisable(true);
         this.lvwHotels.getItems().clear();
+        this.lvwHotels.setDisable(true);
         this.lvwAddOns.getItems().clear();
+        this.lvwAddOns.setDisable(true);
 
         this.chbHotel.setSelected(false);
         this.chbCompanion.setSelected(false);
@@ -388,7 +391,13 @@ public class RegistrationPane extends GridPane {
         this.txfCompanyName.clear();
         this.txfCompanyTelephone.clear();
         this.txfCompanionName.clear();
+        this.txfCompanionName.setDisable(true);
         this.txfPrice.clear();
+
+        this.lblHotels.setDisable(true);
+        this.lblExcursions.setDisable(true);
+        this.lblAddOns.setDisable(true);
+        this.lblCompanionName.setDisable(true);
 
         App.removeClass(this.txfName, "error");
         App.removeClass(this.txfAddress, "error");
@@ -426,7 +435,17 @@ public class RegistrationPane extends GridPane {
         LocalDate arrivalDate = this.dtpStart.getValue();
         LocalDate departureDate = this.dtpEnd.getValue();
 
-        Participant participant = Controller.createParticipant(name, telephone, address, country, city);
+        Participant participant = null;
+        for (Participant p : Controller.getParticipants()) {
+            if (name.equalsIgnoreCase(p.getName()) && telephone.equalsIgnoreCase(p.getTelephone())) {
+                participant = p;
+                break;
+            }
+        }
+        if (participant == null) {
+            participant = Controller.createParticipant(name, telephone, address, country, city);
+        }
+
         Registration registration = participant.createRegistration(companyName, companyTelephone, arrivalDate, departureDate, speaker, this.conference);
 
         if (this.chbCompanion.isSelected()) {
@@ -438,8 +457,7 @@ public class RegistrationPane extends GridPane {
         }
 
         if (this.chbHotel.isSelected()) {
-            // TODO Change the number to automatically update
-            HotelRoom hotelRoom = this.hotel.createHotelRoom(1,
+            HotelRoom hotelRoom = this.hotel.createHotelRoom(
                     (this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice(),
                     !this.chbCompanion.isSelected());
 

@@ -1,30 +1,41 @@
 package gui;
 
+import application.controller.Controller;
 import application.model.Excursion;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class AdminCreateExcursionWindow extends Stage {
 
-    private final Excursion excursion;
+    private Excursion excursion;
+
+    private TextField txfName, txfDescription, txfDestination, txfTime, txfPrice;
+    private DatePicker dtpDate;
+    private CheckBox chbLunch;
+    private Label lblError;
 
     AdminCreateExcursionWindow (Excursion excursion) {
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
-        this.setTitle("Opret udflugt - KAS");
+        this.setTitle(String.format("%s udflugt - KAS", (excursion != null) ? "Opdater" : "Opret"));
+
+        this.excursion = excursion;
 
         GridPane pane = new GridPane();
         this.initContent(pane);
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
-
-        this.excursion = excursion;
     }
 
     AdminCreateExcursionWindow () {
@@ -43,31 +54,146 @@ public class AdminCreateExcursionWindow extends Stage {
 
         // TODO
 
+        VBox vBox = new VBox();
+        pane.add(vBox, 0, 0, 2, 1);
+
+        Label lblInfo = new Label("BEMÆRK: vil du ændre på konferenceinformationer,");
+        vBox.getChildren().add(lblInfo);
+
+        Label lblInfo1 = new Label("kan det ikke gøres her.");
+        vBox.getChildren().add(lblInfo1);
+
+        Label lblName = new Label("Navn:");
+        pane.add(lblName, 0, 1);
+
+        Label lblDescription = new Label("Beskrivelse:");
+        pane.add(lblDescription, 0, 2);
+
+        Label lblDestination = new Label("Destination:");
+        pane.add(lblDestination, 0, 3);
+
+        Label lblDate = new Label("Dato:");
+        pane.add(lblDate, 0, 4);
+
+        Label lblTime = new Label("Tid (Time):");
+        pane.add(lblTime, 0, 5);
+
+        Label lblPrice = new Label("Pris:");
+        pane.add(lblPrice, 0, 6);
+
+        Label lblLunch = new Label("Frokost inkluderet:");
+        pane.add(lblLunch, 0, 7);
+
+        this.lblError = new Label();
+        this.lblError.setTextFill(Color.RED);
+        pane.add(this.lblError, 0, 8, 2, 1);
+
+        this.txfName = new TextField();
+        pane.add(this.txfName, 1, 1);
+
+        this.txfDescription = new TextField();
+        pane.add(this.txfDescription, 1, 2);
+
+        this.txfDestination = new TextField();
+        pane.add(this.txfDestination, 1, 3);
+
+        this.dtpDate = new DatePicker();
+        pane.add(this.dtpDate, 1, 4);
+
+        this.txfTime = new TextField();
+        pane.add(this.txfTime, 1, 5);
+
+        this.txfPrice = new TextField();
+        pane.add(this.txfPrice, 1, 6);
+
+        this.chbLunch = new CheckBox();
+        pane.add(this.chbLunch, 1, 7);
+
         // -------------------------------------------------------------------------
 
         Button btnCancel = new Button("Afslut");
         btnCancel.setOnAction(event -> this.cancelAction());
-        pane.add(btnCancel, 0, 1);
+        pane.add(btnCancel, 0, 9);
 
         Button btnSaveCreate = new Button((this.excursion != null) ? "Gem" : "Opret");
         btnSaveCreate.setOnAction(event -> this.saveCreateAction());
-        pane.add(btnSaveCreate, 1, 1);
+        pane.add(btnSaveCreate, 1, 9);
+
+        // -------------------------------------------------------------------------
+
+        if (this.excursion != null) {
+            this.initControls();
+        }
     }
 
     // -------------------------------------------------------------------------
+
+    private void initControls () {
+        this.txfName.setText(this.excursion.getName());
+        this.txfDescription.setText(this.excursion.getDescription());
+        this.txfDestination.setText(this.excursion.getDestination());
+        this.dtpDate.setValue(this.excursion.getDateTime().toLocalDate());
+        this.txfTime.setText(this.excursion.getDateTime().getHour() + "");
+        this.txfPrice.setText(this.excursion.getPrice() + "");
+        this.chbLunch.setSelected(this.excursion.isLunchIncluded());
+    }
+
+    // -------------------------------------------------------------------------
+
 
     private void cancelAction () {
         this.hide();
     }
 
     private void saveCreateAction () {
-        // TODO get data
+        String name = this.txfName.getText().trim();
+        String description = this.txfDescription.getText().trim();
+        String destination = this.txfDestination.getText().trim();
+        LocalDate date = this.dtpDate.getValue();
+        boolean isLunchIncluded = this.chbLunch.isSelected();
+
+        int timeHour;
+        try {
+            timeHour = Integer.parseInt(this.txfTime.getText().trim());
+        } catch (NumberFormatException ex) {
+            this.lblError.setText("Tid er ikke indtastet korrekt!");
+            return;
+        }
+
+        LocalDateTime dateTime;
+        if (timeHour >= 0 && timeHour <= 23) {
+            dateTime = date.atTime(timeHour, 0);
+        } else {
+            this.lblError.setText("Tid skal være fra 0-23!");
+            return;
+        }
+
+        int price;
+        try {
+            price = Integer.parseInt(this.txfPrice.getText().trim());
+        } catch (NumberFormatException ex) {
+            this.lblError.setText("Pris er ikke indtastet korrekt!");
+            return;
+        }
 
         if (this.excursion != null) {
-            // TODO update the addOn
+            this.excursion.setName(name);
+            this.excursion.setDescription(description);
+            this.excursion.setDestination(destination);
+            this.excursion.setDateTime(dateTime);
+            this.excursion.setPrice(price);
+            this.excursion.setLunchIncluded(isLunchIncluded);
         } else {
-            // TODO create the addOn
+            this.excursion = Controller.createExcursion(name, description, destination, dateTime, price, isLunchIncluded);
         }
+
+        this.hide();
+    }
+
+    // -------------------------------------------------------------------------
+
+    public Excursion getExcursion () {
+        return this.excursion;
     }
 
 }

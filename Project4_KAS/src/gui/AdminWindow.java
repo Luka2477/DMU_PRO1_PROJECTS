@@ -30,6 +30,12 @@ public class AdminWindow extends Stage {
     private void initTabPane (TabPane tabPane) {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+        Tab tabParticipants = new Tab("Deltagere");
+        tabPane.getTabs().add(tabParticipants);
+
+        AdminParticipantsPane participantsPane = new AdminParticipantsPane();
+        tabParticipants.setContent(participantsPane);
+
         Tab tabRegistrations = new Tab("Registrationer");
         tabPane.getTabs().add(tabRegistrations);
 

@@ -80,7 +80,7 @@ public class AdminConferencesPane extends GridPane {
     }
 
     private void updateAction () {
-        AdminCreateConferenceWindow adminCreateConferenceWindow = new AdminCreateConferenceWindow(this.lvwConferences.getSelectionModel().getSelectedItem());
+        AdminCreateConferenceWindow adminCreateConferenceWindow = new AdminCreateConferenceWindow(this.conference);
         adminCreateConferenceWindow.showAndWait();
 
         this.updateControls();

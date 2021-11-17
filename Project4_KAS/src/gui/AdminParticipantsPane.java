@@ -2,17 +2,20 @@ package gui;
 
 import application.controller.Controller;
 import application.model.Participant;
+import application.model.Registration;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
 public class AdminParticipantsPane extends GridPane {
 
     private Participant participant;
 
     private final ListView<Participant> lvwParticipants;
+    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone;
+    private final TextArea txaRegistrations;
 
     AdminParticipantsPane () {
         this.setPadding(new Insets(10));
@@ -24,28 +27,72 @@ public class AdminParticipantsPane extends GridPane {
 
         this.lvwParticipants = new ListView<>();
         this.lvwParticipants.setPrefSize(250, 400);
-        this.add(this.lvwParticipants, 0, 0);
+        this.add(this.lvwParticipants, 0, 0, 1, 6);
 
         ChangeListener<Participant> listener = (ov, oldValue, newValue) -> this.selectedParticipantChanged(newValue);
         this.lvwParticipants.getSelectionModel().selectedItemProperty().addListener(listener);
 
         // --------------------------------------------------------------
 
-        // TODO GUI
+        Label lblName = new Label("Navn:");
+        this.add(lblName, 1, 0);
+
+        Label lblAddress = new Label("Adresse:");
+        this.add(lblAddress, 1, 1);
+
+        Label lblCountry = new Label("Land:");
+        this.add(lblCountry, 1, 2);
+
+        Label lblCity = new Label("By:");
+        this.add(lblCity, 1, 3);
+
+        Label lblTelephone = new Label("Tlf. nr:");
+        this.add(lblTelephone, 1, 4);
+
+        Label lblRegistrations = new Label("Registrationer:");
+        this.add(lblRegistrations, 1, 5);
+
+        this.txfName = new TextField();
+        this.txfName.setEditable(false);
+        this.add(this.txfName, 2, 0);
+
+        this.txfAddress = new TextField();
+        this.txfAddress.setEditable(false);
+        this.add(this.txfAddress, 2, 1);
+
+        this.txfCountry = new TextField();
+        this.txfCountry.setEditable(false);
+        this.add(this.txfCountry, 2, 2);
+
+        this.txfCity = new TextField();
+        this.txfCity.setEditable(false);
+        this.add(this.txfCity, 2, 3);
+
+        this.txfTelephone = new TextField();
+        this.txfTelephone.setEditable(false);
+        this.add(this.txfTelephone, 2, 4);
+
+        this.txaRegistrations = new TextArea();
+        this.txaRegistrations.setPrefSize(200, 100);
+        this.txaRegistrations.setEditable(false);
+        this.add(this.txaRegistrations, 2, 5);
 
         // --------------------------------------------------------------
+
+        HBox hBox = new HBox(10);
+        this.add(hBox, 0, 6);
 
         Button btnDelete = new Button("Slet");
         btnDelete.setOnAction(event -> this.deleteAction());
-        this.add(btnDelete, 0, 1);
+        hBox.getChildren().add(btnDelete);
 
         Button btnUpdate = new Button("Opdatere");
         btnUpdate.setOnAction(event -> this.updateAction());
-        this.add(btnUpdate, 1, 1);
+        hBox.getChildren().add(btnUpdate);
 
         // --------------------------------------------------------------
 
-        this.updateControls();
+        this.updateParticipants();
     }
 
     // --------------------------------------------------------------
@@ -59,24 +106,52 @@ public class AdminParticipantsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateControls () {
-        // TODO update data
+        if (this.participant != null) {
+            this.txfName.setText(this.participant.getName());
+            this.txfAddress.setText(this.participant.getAddress());
+            this.txfCountry.setText(this.participant.getCountry());
+            this.txfCity.setText(this.participant.getCity());
+            this.txfTelephone.setText(this.participant.getTelephone());
+
+            StringBuilder registrations = new StringBuilder();
+            for (Registration registration : this.participant.getRegistrations()) {
+                registrations.append(registration.getConference().getName()).append("\n");
+            }
+            this.txaRegistrations.setText(registrations.toString());
+        }
+    }
+
+    private void clearControls () {
+        this.txfName.clear();
+        this.txfAddress.clear();
+        this.txfCountry.clear();
+        this.txfCity.clear();
+        this.txfTelephone.clear();
+        this.txaRegistrations.clear();
+    }
+
+    private void updateParticipants () {
         this.lvwParticipants.getItems().setAll(Controller.getParticipants());
     }
 
     // --------------------------------------------------------------
 
     private void updateAction () {
-        AdminUpdateParticipantsWindow adminUpdateParticipantsWindow = new AdminUpdateParticipantsWindow(this.lvwParticipants.getSelectionModel().getSelectedItem());
-        adminUpdateParticipantsWindow.showAndWait();
+        if (this.participant != null) {
+            AdminUpdateParticipantsWindow adminUpdateParticipantsWindow = new AdminUpdateParticipantsWindow(this.participant);
+            adminUpdateParticipantsWindow.showAndWait();
 
-        this.updateControls();
+            this.clearControls();
+            this.updateParticipants();
+        }
     }
 
     private void deleteAction () {
         if (this.participant != null) {
             Controller.removeParticipant(this.participant);
 
-            this.updateControls();
+            this.clearControls();
+            this.updateParticipants();
         }
     }
 
