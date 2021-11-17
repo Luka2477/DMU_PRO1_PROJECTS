@@ -3,6 +3,7 @@ package gui;
 import application.controller.Controller;
 import application.model.Conference;
 import application.model.Excursion;
+import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -16,7 +17,8 @@ public class AdminExcursionsPane extends GridPane {
     private Excursion excursion;
 
     private final ListView<Excursion> lvwExcursions;
-    private final TextField txfName, txfDescription, txfDestination, txfDateTime, txfPrice;
+    private final TextField txfName, txfDescription, txfDestination, txfDateTime;
+    private final NumericField nufPrice;
     private final CheckBox chbLunch;
     private final TextArea txaConferences;
 
@@ -74,9 +76,9 @@ public class AdminExcursionsPane extends GridPane {
         this.txfDateTime.setEditable(false);
         this.add(this.txfDateTime, 2, 3);
 
-        this.txfPrice = new TextField();
-        this.txfPrice.setEditable(false);
-        this.add(this.txfPrice, 2, 4);
+        this.nufPrice = new NumericField();
+        this.nufPrice.setEditable(false);
+        this.add(this.nufPrice, 2, 4);
 
         this.chbLunch = new CheckBox();
         this.chbLunch.setDisable(true);
@@ -128,7 +130,7 @@ public class AdminExcursionsPane extends GridPane {
             this.txfDescription.setText(this.excursion.getDescription());
             this.txfDestination.setText(this.excursion.getDestination());
             this.txfDateTime.setText(this.excursion.getDateTime().format(dtf));
-            this.txfPrice.setText(this.excursion.getPrice() + "");
+            this.nufPrice.setText(this.excursion.getPrice() + "");
             this.chbLunch.setSelected(this.excursion.isLunchIncluded());
 
             StringBuilder conferences = new StringBuilder();
@@ -146,7 +148,7 @@ public class AdminExcursionsPane extends GridPane {
         this.txfDescription.clear();
         this.txfDestination.clear();
         this.txfDateTime.clear();
-        this.txfPrice.clear();
+        this.nufPrice.clear();
         this.chbLunch.setSelected(false);
         this.txaConferences.clear();
     }
@@ -162,8 +164,8 @@ public class AdminExcursionsPane extends GridPane {
         adminCreateExcursionWindow.showAndWait();
 
         this.excursion = adminCreateExcursionWindow.getExcursion();
-        this.updateExcursions();
         this.updateControls();
+        this.updateExcursions();
     }
 
     private void updateAction () {
@@ -171,8 +173,8 @@ public class AdminExcursionsPane extends GridPane {
             AdminCreateExcursionWindow adminCreateExcursionWindow = new AdminCreateExcursionWindow(this.excursion);
             adminCreateExcursionWindow.showAndWait();
 
-            this.updateExcursions();
             this.updateControls();
+            this.updateExcursions();
         }
     }
 
@@ -181,8 +183,8 @@ public class AdminExcursionsPane extends GridPane {
             Controller.removeExcursion(this.excursion);
 
             this.excursion = null;
-            this.updateExcursions();
             this.clearControls();
+            this.updateExcursions();
         }
     }
 

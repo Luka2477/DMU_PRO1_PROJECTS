@@ -25,6 +25,10 @@ public class AdminPane extends GridPane {
 
         GridPane pane = new GridPane();
         pane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
+        pane.setPadding(new Insets(10));
+        pane.setHgap(10);
+        pane.setVgap(10);
+        pane.setGridLinesVisible(false);
         this.add(pane, 0, 0);
 
         Label lblUsername = new Label("Brugernavn:");

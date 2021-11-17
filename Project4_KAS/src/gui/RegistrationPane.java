@@ -2,6 +2,7 @@ package gui;
 
 import application.controller.Controller;
 import application.model.*;
+import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -22,14 +23,17 @@ public class RegistrationPane extends GridPane {
     private Conference conference;
     private Hotel hotel;
 
-    private final GridPane conferencesGridPane, participantGridPane, companionGridPane, hotelGridPane;
+    private final GridPane participantGridPane;
+    private final GridPane companionGridPane;
+    private final GridPane hotelGridPane;
 
     private final ListView<Conference> lvwConferences;
     private final ListView<Excursion> lvwExcursions;
     private final ListView<Hotel> lvwHotels;
     private final ListView<AddOn> lvwAddOns;
-    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone;
-    private final TextField txfCompanyName, txfCompanyTelephone, txfCompanionName, txfPrice;
+    private final TextField txfName, txfAddress, txfCountry, txfCity;
+    private final TextField txfCompanyName, txfCompanionName;
+    private final NumericField nufTelephone, nufCompanyTelephone, nufPrice;
     private final CheckBox chbSpeaker, chbCompanion, chbHotel;
     private final DatePicker dtpStart, dtpEnd;
     private final Label lblCompanionName, lblExcursions, lblHotels, lblAddOns, lblDouble;
@@ -43,19 +47,23 @@ public class RegistrationPane extends GridPane {
 
         // --------------------------------------------------------------
 
-        this.conferencesGridPane = new GridPane();
-        this.conferencesGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
-        this.add(this.conferencesGridPane, 0, 0, 2, 1);
+        GridPane conferencesGridPane = new GridPane();
+        conferencesGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
+        conferencesGridPane.setPadding(new Insets(10));
+        conferencesGridPane.setHgap(10);
+        conferencesGridPane.setVgap(10);
+        conferencesGridPane.setGridLinesVisible(false);
+        this.add(conferencesGridPane, 0, 0, 2, 1);
 
         Label lblConferenceHeader = new Label("Vælg konference");
         lblConferenceHeader.setFont(new Font(25));
         GridPane.setHalignment(lblConferenceHeader, HPos.CENTER);
-        this.conferencesGridPane.add(lblConferenceHeader, 0, 0);
+        conferencesGridPane.add(lblConferenceHeader, 0, 0);
 
         this.lvwConferences = new ListView<>();
         this.lvwConferences.getItems().setAll(Controller.getConferences());
         this.lvwConferences.setPrefSize(1000, 200);
-        this.conferencesGridPane.add(this.lvwConferences, 0, 1);
+        conferencesGridPane.add(this.lvwConferences, 0, 1);
 
         ChangeListener<Conference> listener = (ov, oldConference, newConference) -> this.selectedConferenceChanged(newConference);
         this.lvwConferences.getSelectionModel().selectedItemProperty().addListener(listener);
@@ -64,6 +72,10 @@ public class RegistrationPane extends GridPane {
 
         this.participantGridPane = new GridPane();
         this.participantGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
+        this.participantGridPane.setPadding(new Insets(10));
+        this.participantGridPane.setHgap(10);
+        this.participantGridPane.setVgap(10);
+        this.participantGridPane.setGridLinesVisible(false);
         this.participantGridPane.setDisable(true);
         this.add(this.participantGridPane, 0, 1);
 
@@ -109,9 +121,9 @@ public class RegistrationPane extends GridPane {
         Label lblTelephone = new Label("Tlf.nr.");
         this.participantGridPane.add(lblTelephone, 2, 3);
 
-        this.txfTelephone = new TextField();
-        this.participantGridPane.add(this.txfTelephone, 3, 3);
-        this.numberValidation(this.txfTelephone);
+        this.nufTelephone = new NumericField();
+        this.participantGridPane.add(this.nufTelephone, 3, 3);
+        this.numberValidation(this.nufTelephone);
 
         Label lblStartDate = new Label("Ankomstdato:");
         this.participantGridPane.add(lblStartDate, 0, 4);
@@ -136,20 +148,24 @@ public class RegistrationPane extends GridPane {
 
         this.txfCompanyName = new TextField();
         this.participantGridPane.add(this.txfCompanyName, 1, 6);
-        this.stringValidation(this.txfCompanyName);
+        this.specificStringValidation(this.txfCompanyName);
 
         Label lblCompanyTelephone = new Label("Firma tlf.nr.");
         this.participantGridPane.add(lblCompanyTelephone, 2, 6);
 
-        this.txfCompanyTelephone = new TextField();
-        this.participantGridPane.add(this.txfCompanyTelephone, 3, 6);
-        this.numberValidation(this.txfCompanyTelephone);
+        this.nufCompanyTelephone = new NumericField();
+        this.participantGridPane.add(this.nufCompanyTelephone, 3, 6);
+        this.specificNumberValidation(this.nufCompanyTelephone);
 
         // --------------------------------------------------------------
 
         this.companionGridPane = new GridPane();
         this.companionGridPane.setPrefWidth(500);
         this.companionGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
+        this.companionGridPane.setPadding(new Insets(10));
+        this.companionGridPane.setHgap(10);
+        this.companionGridPane.setVgap(10);
+        this.companionGridPane.setGridLinesVisible(false);
         this.companionGridPane.setDisable(true);
         this.add(this.companionGridPane, 1, 1);
 
@@ -172,7 +188,7 @@ public class RegistrationPane extends GridPane {
         this.txfCompanionName = new TextField();
         this.txfCompanionName.setDisable(true);
         this.companionGridPane.add(this.txfCompanionName, 3, 1);
-        this.stringValidation(this.txfCompanionName);
+        this.specificStringValidation(this.txfCompanionName);
 
         this.lblExcursions = new Label("Udflugter");
         this.lblExcursions.setFont(new Font(15));
@@ -180,7 +196,7 @@ public class RegistrationPane extends GridPane {
         this.companionGridPane.add(this.lblExcursions, 0, 2, 4, 1);
 
         this.lvwExcursions = new ListView<>();
-        this.lvwExcursions.setPrefSize(500, 200);
+        this.lvwExcursions.setPrefSize(500, 130);
         this.lvwExcursions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.lvwExcursions.setDisable(true);
         this.companionGridPane.add(this.lvwExcursions, 0, 3, 4, 1);
@@ -192,6 +208,10 @@ public class RegistrationPane extends GridPane {
 
         this.hotelGridPane = new GridPane();
         this.hotelGridPane.setStyle("-fx-border-style: solid; -fx-border-width: 3; -fx-border-radius: 10;");
+        this.hotelGridPane.setPadding(new Insets(10));
+        this.hotelGridPane.setHgap(10);
+        this.hotelGridPane.setVgap(10);
+        this.hotelGridPane.setGridLinesVisible(false);
         this.hotelGridPane.setDisable(true);
         this.add(this.hotelGridPane, 0, 2, 2, 1);
 
@@ -214,7 +234,7 @@ public class RegistrationPane extends GridPane {
         this.hotelGridPane.add(this.lblHotels, 0, 2);
 
         this.lvwHotels = new ListView<>();
-        this.lvwHotels.setPrefSize(700, 200);
+        this.lvwHotels.setPrefSize(700, 150);
         this.lvwHotels.setDisable(true);
         this.hotelGridPane.add(this.lvwHotels, 0, 3);
 
@@ -227,7 +247,7 @@ public class RegistrationPane extends GridPane {
         this.hotelGridPane.add(this.lblAddOns, 1, 2);
 
         this.lvwAddOns = new ListView<>();
-        this.lvwAddOns.setPrefSize(300, 200);
+        this.lvwAddOns.setPrefSize(300, 150);
         this.lvwAddOns.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.lvwAddOns.setDisable(true);
         this.hotelGridPane.add(this.lvwAddOns, 1, 3);
@@ -259,8 +279,8 @@ public class RegistrationPane extends GridPane {
         Label lblPrice = new Label("Samlet pris:");
         hbox.getChildren().add(lblPrice);
 
-        this.txfPrice = new TextField();
-        hbox.getChildren().add(this.txfPrice);
+        this.nufPrice = new NumericField();
+        hbox.getChildren().add(this.nufPrice);
     }
 
     // --------------------------------------------------------------
@@ -363,7 +383,7 @@ public class RegistrationPane extends GridPane {
                 }
             }
 
-            this.txfPrice.setText(conferencePrice + hotelPrice + excursionPrice + "");
+            this.nufPrice.setText(conferencePrice + hotelPrice + excursionPrice + "");
         }
     }
 
@@ -387,12 +407,12 @@ public class RegistrationPane extends GridPane {
         this.txfAddress.clear();
         this.txfCity.clear();
         this.txfCountry.clear();
-        this.txfTelephone.clear();
+        this.nufTelephone.clear();
         this.txfCompanyName.clear();
-        this.txfCompanyTelephone.clear();
+        this.nufCompanyTelephone.clear();
         this.txfCompanionName.clear();
         this.txfCompanionName.setDisable(true);
-        this.txfPrice.clear();
+        this.nufPrice.clear();
 
         this.lblHotels.setDisable(true);
         this.lblExcursions.setDisable(true);
@@ -403,9 +423,9 @@ public class RegistrationPane extends GridPane {
         App.removeClass(this.txfAddress, "error");
         App.removeClass(this.txfCity, "error");
         App.removeClass(this.txfCountry, "error");
-        App.removeClass(this.txfTelephone, "error");
+        App.removeClass(this.nufTelephone, "error");
         App.removeClass(this.txfCompanyName, "error");
-        App.removeClass(this.txfCompanyTelephone, "error");
+        App.removeClass(this.nufCompanyTelephone, "error");
         App.removeClass(this.txfCompanionName, "error");
     }
 
@@ -413,21 +433,38 @@ public class RegistrationPane extends GridPane {
 
     private void submitAction () {
         ArrayList<TextField> errorableTextFields = new ArrayList<>(Arrays.asList(
-                this.txfName, this.txfAddress, this.txfCity, this.txfCountry, this.txfTelephone,
-                this.txfCompanyName, this.txfCompanyTelephone, this.txfCompanionName));
+                this.txfName, this.txfAddress, this.txfCity, this.txfCountry, this.nufTelephone));
         for (TextField textField : errorableTextFields) {
-            if (textField.getStyleClass().contains("error")) {
+            if (!textField.getStyleClass().contains("valid")) {
+                App.addClass(textField, "error");
                 return;
             }
         }
+
+        if (this.txfCompanyName.getText().trim().length() != 0 || this.nufCompanyTelephone.getText().trim().length() != 0) {
+            if (!this.txfCompanyName.getStyleClass().contains("valid")) {
+                App.addClass(this.txfCompanyName, "error");
+                return;
+            } else if (!this.nufCompanyTelephone.getStyleClass().contains("valid")) {
+                App.addClass(this.nufCompanyTelephone, "error");
+                return;
+            }
+        }
+
+        if (this.chbCompanion.isSelected() && !this.txfCompanionName.getStyleClass().contains("valid")) {
+            App.addClass(this.txfCompanionName, "error");
+            return;
+        }
+
+        // --------------------------------------------------------------
 
         String name = this.txfName.getText().trim();
         String address = this.txfAddress.getText().trim();
         String city = this.txfCity.getText().trim();
         String country = this.txfCountry.getText().trim();
-        String telephone = this.txfTelephone.getText().trim();
+        String telephone = this.nufTelephone.getText().trim();
         String companyName = this.txfCompanyName.getText().trim();
-        String companyTelephone = this.txfCompanyTelephone.getText().trim();
+        String companyTelephone = this.nufCompanyTelephone.getText().trim();
         String companionName = this.txfCompanionName.getText().trim();
 
         boolean speaker = this.chbSpeaker.isSelected();
@@ -492,7 +529,23 @@ public class RegistrationPane extends GridPane {
     private void stringValidation (final TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();
+            if (text.length() <= 2) {
+                App.removeClass(textField, "valid");
+                App.addClass(textField, "error");
+            } else {
+                App.removeClass(textField, "error");
+                App.addClass(textField, "valid");
+            }
+        });
+    }
+
+    private void specificStringValidation (final TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String text = newValue.trim();
             if (text.length() == 0) {
+                App.removeClass(textField, "error");
+                App.removeClass(textField, "valid");
+            } else if (text.length() <= 2) {
                 App.removeClass(textField, "valid");
                 App.addClass(textField, "error");
             } else {
@@ -506,6 +559,22 @@ public class RegistrationPane extends GridPane {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();
             if (text.length() != 8) {
+                App.removeClass(textField, "valid");
+                App.addClass(textField, "error");
+            } else {
+                App.removeClass(textField, "error");
+                App.addClass(textField, "valid");
+            }
+        });
+    }
+
+    private void specificNumberValidation (final TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String text = newValue.trim();
+            if (text.length() == 0) {
+                App.removeClass(textField, "error");
+                App.removeClass(textField, "valid");
+            } else if (text.length() != 8) {
                 App.removeClass(textField, "valid");
                 App.addClass(textField, "error");
             } else {

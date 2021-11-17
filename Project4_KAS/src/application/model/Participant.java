@@ -78,4 +78,11 @@ public class Participant extends Person {
     public ArrayList<Registration> getRegistrations () {
         return new ArrayList<>(this.registrations);
     }
+
+    // ------------------------------------------------------------------------------
+
+    @Override
+    public String toString () {
+        return String.format("Navn: %s%nTlf.nr: %s", this.getName(), this.telephone);
+    }
 }

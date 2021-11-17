@@ -1,6 +1,7 @@
 package gui;
 
 import application.model.Participant;
+import gui.components.NumericField;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +17,8 @@ public class AdminUpdateParticipantsWindow extends Stage {
 
     private final Participant participant;
 
-    private TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone;
+    private TextField txfName, txfAddress, txfCountry, txfCity;
+    private NumericField nufTelephone;
 
     AdminUpdateParticipantsWindow (Participant participant) {
         this.initStyle(StageStyle.UTILITY);
@@ -78,8 +80,8 @@ public class AdminUpdateParticipantsWindow extends Stage {
         this.txfCity = new TextField();
         pane.add(this.txfCity, 1, 4);
 
-        this.txfTelephone = new TextField();
-        pane.add(this.txfTelephone, 1, 5);
+        this.nufTelephone = new NumericField();
+        pane.add(this.nufTelephone, 1, 5);
 
         // -------------------------------------------------------------------------
 
@@ -103,7 +105,7 @@ public class AdminUpdateParticipantsWindow extends Stage {
         this.txfAddress.setText(this.participant.getAddress());
         this.txfCountry.setText(this.participant.getCountry());
         this.txfCity.setText(this.participant.getCity());
-        this.txfTelephone.setText(this.participant.getTelephone());
+        this.nufTelephone.setText(this.participant.getTelephone());
     }
 
     // -------------------------------------------------------------------------
@@ -117,7 +119,7 @@ public class AdminUpdateParticipantsWindow extends Stage {
         String address = this.txfAddress.getText().trim();
         String country = this.txfCountry.getText().trim();
         String city = this.txfCity.getText().trim();
-        String telephone = this.txfTelephone.getText().trim();
+        String telephone = this.nufTelephone.getText().trim();
 
         this.participant.setName(name);
         this.participant.setAddress(address);

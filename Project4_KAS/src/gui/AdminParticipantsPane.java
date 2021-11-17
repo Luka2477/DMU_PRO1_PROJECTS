@@ -3,6 +3,7 @@ package gui;
 import application.controller.Controller;
 import application.model.Participant;
 import application.model.Registration;
+import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -14,7 +15,8 @@ public class AdminParticipantsPane extends GridPane {
     private Participant participant;
 
     private final ListView<Participant> lvwParticipants;
-    private final TextField txfName, txfAddress, txfCountry, txfCity, txfTelephone;
+    private final TextField txfName, txfAddress, txfCountry, txfCity;
+    private final NumericField nufTelephone;
     private final TextArea txaRegistrations;
 
     AdminParticipantsPane () {
@@ -68,9 +70,9 @@ public class AdminParticipantsPane extends GridPane {
         this.txfCity.setEditable(false);
         this.add(this.txfCity, 2, 3);
 
-        this.txfTelephone = new TextField();
-        this.txfTelephone.setEditable(false);
-        this.add(this.txfTelephone, 2, 4);
+        this.nufTelephone = new NumericField();
+        this.nufTelephone.setEditable(false);
+        this.add(this.nufTelephone, 2, 4);
 
         this.txaRegistrations = new TextArea();
         this.txaRegistrations.setPrefSize(200, 100);
@@ -111,7 +113,7 @@ public class AdminParticipantsPane extends GridPane {
             this.txfAddress.setText(this.participant.getAddress());
             this.txfCountry.setText(this.participant.getCountry());
             this.txfCity.setText(this.participant.getCity());
-            this.txfTelephone.setText(this.participant.getTelephone());
+            this.nufTelephone.setText(this.participant.getTelephone());
 
             StringBuilder registrations = new StringBuilder();
             for (Registration registration : this.participant.getRegistrations()) {
@@ -126,7 +128,7 @@ public class AdminParticipantsPane extends GridPane {
         this.txfAddress.clear();
         this.txfCountry.clear();
         this.txfCity.clear();
-        this.txfTelephone.clear();
+        this.nufTelephone.clear();
         this.txaRegistrations.clear();
     }
 
@@ -141,7 +143,7 @@ public class AdminParticipantsPane extends GridPane {
             AdminUpdateParticipantsWindow adminUpdateParticipantsWindow = new AdminUpdateParticipantsWindow(this.participant);
             adminUpdateParticipantsWindow.showAndWait();
 
-            this.clearControls();
+            this.updateControls();
             this.updateParticipants();
         }
     }
@@ -150,6 +152,7 @@ public class AdminParticipantsPane extends GridPane {
         if (this.participant != null) {
             Controller.removeParticipant(this.participant);
 
+            this.participant = null;
             this.clearControls();
             this.updateParticipants();
         }

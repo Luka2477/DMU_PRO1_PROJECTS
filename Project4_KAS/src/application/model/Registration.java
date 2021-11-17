@@ -121,9 +121,9 @@ public class Registration {
 
     // ------------------------------------------------------------------------------
 
-    public double calulateTotalPrice () {
+    public int calulateTotalPrice () {
         int daysOfStay = (int) ChronoUnit.DAYS.between(this.arrivalDate, this.departureDate);
-        double sum = this.conference.getDailyPrice();
+        int sum = this.conference.getDailyPrice();
 
         if (this.hotelRoom != null) {
             sum += this.getHotelRoom().getPrice() + this.getHotelRoom().calculateAddOnPrice();

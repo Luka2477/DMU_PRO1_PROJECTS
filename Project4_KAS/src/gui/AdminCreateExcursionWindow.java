@@ -2,6 +2,7 @@ package gui;
 
 import application.controller.Controller;
 import application.model.Excursion;
+import gui.components.NumericField;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,7 +20,8 @@ public class AdminCreateExcursionWindow extends Stage {
 
     private Excursion excursion;
 
-    private TextField txfName, txfDescription, txfDestination, txfTime, txfPrice;
+    private TextField txfName, txfDescription, txfDestination;
+    private NumericField nufTime, nufPrice;
     private DatePicker dtpDate;
     private CheckBox chbLunch;
     private Label lblError;
@@ -100,11 +102,11 @@ public class AdminCreateExcursionWindow extends Stage {
         this.dtpDate = new DatePicker();
         pane.add(this.dtpDate, 1, 4);
 
-        this.txfTime = new TextField();
-        pane.add(this.txfTime, 1, 5);
+        this.nufTime = new NumericField();
+        pane.add(this.nufTime, 1, 5);
 
-        this.txfPrice = new TextField();
-        pane.add(this.txfPrice, 1, 6);
+        this.nufPrice = new NumericField();
+        pane.add(this.nufPrice, 1, 6);
 
         this.chbLunch = new CheckBox();
         pane.add(this.chbLunch, 1, 7);
@@ -133,8 +135,8 @@ public class AdminCreateExcursionWindow extends Stage {
         this.txfDescription.setText(this.excursion.getDescription());
         this.txfDestination.setText(this.excursion.getDestination());
         this.dtpDate.setValue(this.excursion.getDateTime().toLocalDate());
-        this.txfTime.setText(this.excursion.getDateTime().getHour() + "");
-        this.txfPrice.setText(this.excursion.getPrice() + "");
+        this.nufTime.setText(this.excursion.getDateTime().getHour() + "");
+        this.nufPrice.setText(this.excursion.getPrice() + "");
         this.chbLunch.setSelected(this.excursion.isLunchIncluded());
     }
 
@@ -151,28 +153,14 @@ public class AdminCreateExcursionWindow extends Stage {
         String destination = this.txfDestination.getText().trim();
         LocalDate date = this.dtpDate.getValue();
         boolean isLunchIncluded = this.chbLunch.isSelected();
-
-        int timeHour;
-        try {
-            timeHour = Integer.parseInt(this.txfTime.getText().trim());
-        } catch (NumberFormatException ex) {
-            this.lblError.setText("Tid er ikke indtastet korrekt!");
-            return;
-        }
+        int price = Integer.parseInt(this.nufPrice.getText().trim());
+        int timeHour = Integer.parseInt(this.nufTime.getText().trim());
 
         LocalDateTime dateTime;
         if (timeHour >= 0 && timeHour <= 23) {
             dateTime = date.atTime(timeHour, 0);
         } else {
             this.lblError.setText("Tid skal være fra 0-23!");
-            return;
-        }
-
-        int price;
-        try {
-            price = Integer.parseInt(this.txfPrice.getText().trim());
-        } catch (NumberFormatException ex) {
-            this.lblError.setText("Pris er ikke indtastet korrekt!");
             return;
         }
 

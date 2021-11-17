@@ -4,6 +4,7 @@ import application.controller.Controller;
 import application.model.AddOn;
 import application.model.Excursion;
 import application.model.Registration;
+import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -15,12 +16,15 @@ import java.time.format.DateTimeFormatter;
 public class AdminRegistrationsPane extends GridPane {
 
     private Registration registration;
+    private Excursion excursion;
 
     private final ListView<Registration> lvwRegistrations;
-    private final TextField txfName, txfTelephone, txfArrivalDate, txfDepartureDate, txfCompanyName;
-    private final TextField txfCompanyTelephone, txfCompanionName, txfConference, txfHotel, txfPrice;
+    private final ListView<Excursion> lvwExcursions;
+    private final TextField txfName, txfArrivalDate, txfDepartureDate, txfCompanyName;
+    private final TextField txfCompanionName, txfConference, txfHotel;
+    private final NumericField nufTelephone, nufCompanyTelephone, nufPrice;
     private final CheckBox chbSpeaker;
-    private final TextArea txaExcursions, txaAddOns;
+    private final TextArea txaAddOns;
 
     AdminRegistrationsPane () {
         this.setPadding(new Insets(10));
@@ -61,9 +65,9 @@ public class AdminRegistrationsPane extends GridPane {
         this.txfName.setEditable(false);
         this.add(this.txfName, 2, 0);
 
-        this.txfTelephone = new TextField();
-        this.txfTelephone.setEditable(false);
-        this.add(this.txfTelephone, 2, 1);
+        this.nufTelephone = new NumericField();
+        this.nufTelephone.setEditable(false);
+        this.add(this.nufTelephone, 2, 1);
 
         this.txfArrivalDate = new TextField();
         this.txfArrivalDate.setEditable(false);
@@ -78,10 +82,12 @@ public class AdminRegistrationsPane extends GridPane {
         this.chbSpeaker.setOpacity(1);
         this.add(this.chbSpeaker, 2, 4);
 
-        this.txaExcursions = new TextArea();
-        this.txaExcursions.setEditable(false);
-        this.txaExcursions.setPrefSize(200, 100);
-        this.add(this.txaExcursions, 2, 5);
+        this.lvwExcursions = new ListView<>();
+        this.lvwExcursions.setPrefSize(200, 100);
+        this.add(this.lvwExcursions, 2, 5);
+
+        ChangeListener<Excursion> listenerExcursion = (ov, oldValue, newValue) -> this.selectedExcursionChanged(newValue);
+        this.lvwExcursions.getSelectionModel().selectedItemProperty().addListener(listenerExcursion);
 
         Label lblCompanyName = new Label("Firmanavn:");
         this.add(lblCompanyName, 3, 0);
@@ -108,9 +114,9 @@ public class AdminRegistrationsPane extends GridPane {
         this.txfCompanyName.setEditable(false);
         this.add(this.txfCompanyName, 4, 0);
 
-        this.txfCompanyTelephone = new TextField();
-        this.txfCompanyTelephone.setEditable(false);
-        this.add(this.txfCompanyTelephone, 4, 1);
+        this.nufCompanyTelephone = new NumericField();
+        this.nufCompanyTelephone.setEditable(false);
+        this.add(this.nufCompanyTelephone, 4, 1);
 
         this.txfCompanionName = new TextField();
         this.txfCompanionName.setEditable(false);
@@ -129,21 +135,32 @@ public class AdminRegistrationsPane extends GridPane {
         this.txaAddOns.setPrefSize(200, 100);
         this.add(this.txaAddOns, 4, 5);
 
-        this.txfPrice = new TextField();
-        this.add(this.txfPrice, 4, 6);
+        this.nufPrice = new NumericField();
+        this.add(this.nufPrice, 4, 6);
 
         // --------------------------------------------------------------
 
         HBox hBox = new HBox(10);
         this.add(hBox, 0, 6);
 
-        Button btnDelete = new Button("Slet");
+        Button btnDelete = new Button("Slet registration");
         btnDelete.setOnAction(event -> this.deleteAction());
         hBox.getChildren().add(btnDelete);
 
-        Button btnUpdate = new Button("Opdatere");
+        Button btnUpdate = new Button("Opdatere registration");
         btnUpdate.setOnAction(event -> this.updateAction());
         hBox.getChildren().add(btnUpdate);
+
+        HBox hBoxExcursion = new HBox(10);
+        this.add(hBoxExcursion, 2, 6);
+
+        Button btnRemoveExcursion = new Button("Fjern udflugt");
+        btnRemoveExcursion.setOnAction(event -> this.removeExcursionAction());
+        hBoxExcursion.getChildren().add(btnRemoveExcursion);
+
+        Button btnAddExcursion = new Button("Tilføj udflugt");
+        btnAddExcursion.setOnAction(event -> this.addExcursionAction());
+        hBoxExcursion.getChildren().add(btnAddExcursion);
 
         // --------------------------------------------------------------
 
@@ -158,6 +175,10 @@ public class AdminRegistrationsPane extends GridPane {
         this.updateControls();
     }
 
+    private void selectedExcursionChanged (Excursion excursion) {
+        this.excursion = excursion;
+    }
+
     // --------------------------------------------------------------
 
     private void updateControls () {
@@ -165,21 +186,15 @@ public class AdminRegistrationsPane extends GridPane {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM-yyyy");
 
             this.txfName.setText(this.registration.getParticipant().getName());
-            this.txfTelephone.setText(this.registration.getParticipant().getTelephone());
+            this.nufTelephone.setText(this.registration.getParticipant().getTelephone());
             this.txfArrivalDate.setText(this.registration.getArrivalDate().format(dtf));
             this.txfDepartureDate.setText(this.registration.getDepartureDate().format(dtf));
             this.chbSpeaker.setSelected(this.registration.isSpeaker());
             this.txfCompanyName.setText(this.registration.getCompanyName());
-            this.txfCompanyTelephone.setText(this.registration.getCompanyTelephone());
+            this.nufCompanyTelephone.setText(this.registration.getCompanyTelephone());
 
             if (this.registration.getCompanion() != null) {
-                this.txfCompanionName.setText(this.registration.getCompanion().getName());
-
-                StringBuilder excursions = new StringBuilder();
-                for (Excursion excursion : this.registration.getCompanion().getExcursions()) {
-                    excursions.append(excursion.getName()).append("\n");
-                }
-                this.txaExcursions.setText(excursions.toString());
+                this.lvwExcursions.getItems().setAll(this.registration.getCompanion().getExcursions());
             }
 
             this.txfConference.setText(this.registration.getConference().getName());
@@ -194,24 +209,24 @@ public class AdminRegistrationsPane extends GridPane {
                 this.txaAddOns.setText(addOns.toString());
             }
 
-            this.txfPrice.setText(this.registration.calulateTotalPrice() + "");
+            this.nufPrice.setText(this.registration.calulateTotalPrice() + "");
         }
     }
 
     private void clearControls () {
         this.txfName.clear();
-        this.txfTelephone.clear();
+        this.nufTelephone.clear();
         this.txfArrivalDate.clear();
         this.txfDepartureDate.clear();
         this.chbSpeaker.setSelected(false);
         this.txfCompanyName.clear();
-        this.txfCompanyTelephone.clear();
+        this.nufCompanyTelephone.clear();
         this.txfCompanionName.clear();
-        this.txaExcursions.clear();
+        this.lvwExcursions.getItems().clear();
         this.txfConference.clear();
         this.txfHotel.clear();
         this.txaAddOns.clear();
-        this.txfPrice.clear();
+        this.nufPrice.clear();
     }
 
     private void updateRegistrations () {
@@ -222,11 +237,11 @@ public class AdminRegistrationsPane extends GridPane {
 
     private void updateAction () {
         if (this.registration != null) {
-            AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.lvwRegistrations.getSelectionModel().getSelectedItem());
+            AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.registration);
             adminUpdateRegistrationWindow.showAndWait();
 
+            this.updateControls();
             this.updateRegistrations();
-            this.clearControls();
         }
     }
 
@@ -234,8 +249,29 @@ public class AdminRegistrationsPane extends GridPane {
         if (this.registration != null) {
             Controller.removeRegistration(this.registration);
 
+            this.registration = null;
             this.clearControls();
             this.updateRegistrations();
+        }
+    }
+
+    // --------------------------------------------------------------
+
+    private void removeExcursionAction () {
+        if (this.registration != null && this.excursion != null) {
+            this.registration.getCompanion().removeExcursion(excursion);
+
+            this.excursion = null;
+            this.updateControls();
+        }
+    }
+
+    private void addExcursionAction () {
+        if (this.registration != null) {
+            AdminAddExcursionToRegistrationWindow adminAddExcursionToRegistrationWindow = new AdminAddExcursionToRegistrationWindow(this.registration);
+            adminAddExcursionToRegistrationWindow.showAndWait();
+
+            this.updateControls();
         }
     }
 

@@ -109,6 +109,7 @@ public class Conference {
         for (Hotel hotel : hotels) {
             if (!this.hotels.contains(hotel)) {
                 this.hotels.add(hotel);
+                hotel.addConference(this);
             }
         }
     }

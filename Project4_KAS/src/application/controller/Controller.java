@@ -127,4 +127,14 @@ public abstract class Controller {
 
         Storage.removeHotel(hotel);
     }
+
+    public static ArrayList<Hotel> getHotels () {
+        return Storage.getHotels();
+    }
+
+    // --------------------------------------------------------------
+
+    public static AddOn createAddOn (Hotel hotel, String name, int price) {
+        return hotel.createAddOn(name, price);
+    }
 }
