@@ -404,7 +404,12 @@ public class RegistrationPane extends GridPane {
                     addOnPrice += addOn.getPrice();
                 }
 
-                hotelPrice = (((this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice()) + addOnPrice) * stayInDays;
+                if (this.chbCompanion.isSelected()) {
+                    hotelPrice = this.hotel.getDoublePrice();
+                } else {
+                    hotelPrice = this.hotel.getSinglePrice();
+                }
+                hotelPrice = (hotelPrice + addOnPrice) * stayInDays;
             }
 
             int excursionPrice = 0;
