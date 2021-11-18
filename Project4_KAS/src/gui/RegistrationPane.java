@@ -39,6 +39,9 @@ public class RegistrationPane extends GridPane {
     private final Label lblCompanionName, lblExcursions, lblHotels, lblAddOns, lblDouble;
     private final Button btnClear, btnSubmit;
 
+    /**
+     * Initialisere RegistrationPane
+     */
     public RegistrationPane () {
         this.setPadding(new Insets(10));
         this.setHgap(10);
@@ -285,6 +288,11 @@ public class RegistrationPane extends GridPane {
 
     // --------------------------------------------------------------
 
+    /**
+     * Handler hvad der sker når brugeren vælger en konference.
+     *
+     * @param newConference konferencen der er blevet valgt
+     */
     private void selectedConferenceChanged (Conference newConference) {
         boolean isNull = newConference == null;
 
@@ -309,10 +317,18 @@ public class RegistrationPane extends GridPane {
         this.updatePrice();
     }
 
+    /**
+     * Handler hvad der sker når brugeren vælger en udflugt.
+     */
     private void selectedExcursionChanged () {
         this.updatePrice();
     }
 
+    /**
+     * Handler hvad der sker når brugeren vælger et hotel.
+     *
+     * @param newHotel hotellet der er blevet valgt
+     */
     private void selectedHotelChanged (Hotel newHotel) {
         this.hotel = newHotel;
         if (newHotel != null) {
@@ -324,10 +340,16 @@ public class RegistrationPane extends GridPane {
         this.updatePrice();
     }
 
+    /**
+     * Handler hvad der sker når brugeren vælger tillæg.
+     */
     private void selectedAddOnChanged () {
         this.updatePrice();
     }
 
+    /**
+     * Handler hvad der sker når brugeren vælger at medbringe en ledsager.
+     */
     private void checkBoxCompanionAction () {
         boolean checked = this.chbCompanion.isSelected();
 
@@ -341,6 +363,9 @@ public class RegistrationPane extends GridPane {
         }
     }
 
+    /**
+     * Handler hvad der sker når brugeren vælger et hotel.
+     */
     private void checkBoxHotelAction () {
         boolean checked = this.chbHotel.isSelected();
 
@@ -355,12 +380,18 @@ public class RegistrationPane extends GridPane {
         }
     }
 
+    /**
+     * Handler hvad der sker når en DatePicker skrifter værdi.
+     */
     private void datePickerChanged () {
         this.updatePrice();
     }
 
     // --------------------------------------------------------------
 
+    /**
+     * Opdatere den samlede pris på registrationen.
+     */
     private void updatePrice () {
         if (this.conference != null && this.dtpStart.getValue() != null && this.dtpEnd.getValue() != null) {
             int stayInDays = (int) ChronoUnit.DAYS.between(this.dtpStart.getValue(), this.dtpEnd.getValue());
@@ -387,6 +418,9 @@ public class RegistrationPane extends GridPane {
         }
     }
 
+    /**
+     * Nulstiller alle kontrol textfielder, datepickers, labels og lister.
+     */
     private void clearControls () {
         this.lvwConferences.getSelectionModel().clearSelection();
         this.lvwExcursions.getItems().clear();
@@ -431,7 +465,11 @@ public class RegistrationPane extends GridPane {
 
     // --------------------------------------------------------------
 
+    /**
+     * Handler hvad der sker når registrationen skal oprettes.
+     */
     private void submitAction () {
+        // Tjek om alle krævede felter er udfyldt, altså om de har "valid" css classen
         ArrayList<TextField> errorableTextFields = new ArrayList<>(Arrays.asList(
                 this.txfName, this.txfAddress, this.txfCity, this.txfCountry, this.nufTelephone));
         for (TextField textField : errorableTextFields) {
@@ -441,6 +479,7 @@ public class RegistrationPane extends GridPane {
             }
         }
 
+        // Hvis enten firmanavn eller firma tlf. nr. er skrevet skal begge udfyldes
         if (this.txfCompanyName.getText().trim().length() != 0 || this.nufCompanyTelephone.getText().trim().length() != 0) {
             if (!this.txfCompanyName.getStyleClass().contains("valid")) {
                 App.addClass(this.txfCompanyName, "error");
@@ -451,6 +490,8 @@ public class RegistrationPane extends GridPane {
             }
         }
 
+        // Hvis medbring ledsager er valgt, så skal ledsager navn også være udfyldt,
+        // ellers tilføj "error" css class til ledsager navn textfield
         if (this.chbCompanion.isSelected() && !this.txfCompanionName.getStyleClass().contains("valid")) {
             App.addClass(this.txfCompanionName, "error");
             return;
@@ -472,6 +513,8 @@ public class RegistrationPane extends GridPane {
         LocalDate arrivalDate = this.dtpStart.getValue();
         LocalDate departureDate = this.dtpEnd.getValue();
 
+        // Hvis deltager med samme navn og tlf. nr. findes, så tilføj registration til den deltager.
+        // Ellers lav en ny deltager.
         Participant participant = null;
         for (Participant p : Controller.getParticipants()) {
             if (name.equalsIgnoreCase(p.getName()) && telephone.equalsIgnoreCase(p.getTelephone())) {
@@ -485,6 +528,8 @@ public class RegistrationPane extends GridPane {
 
         Registration registration = participant.createRegistration(companyName, companyTelephone, arrivalDate, departureDate, speaker, this.conference);
 
+        // Hvis medbring ledsager er valgt, skal vi lave en ledsager på registrationen,
+        // samt udflugter til ledsageren.
         if (this.chbCompanion.isSelected()) {
             Companion companion = registration.createCompanion(companionName);
 
@@ -493,10 +538,10 @@ public class RegistrationPane extends GridPane {
             }
         }
 
+        // Hvis deltageren gerne vil ansøge om hotel gennem os, skal registrationen gives et hotelværelse,
+        // samt tilføje de valgte tillæg til hotelværelset.
         if (this.chbHotel.isSelected()) {
-            HotelRoom hotelRoom = this.hotel.createHotelRoom(
-                    (this.chbCompanion.isSelected()) ? this.hotel.getDoublePrice() : this.hotel.getSinglePrice(),
-                    !this.chbCompanion.isSelected());
+            HotelRoom hotelRoom = this.hotel.createHotelRoom(!this.chbCompanion.isSelected());
 
             for (AddOn addOn : this.lvwAddOns.getSelectionModel().getSelectedItems()) {
                 hotelRoom.addAddOn(addOn);
@@ -516,6 +561,13 @@ public class RegistrationPane extends GridPane {
 
     // --------------------------------------------------------------
 
+    /**
+     * Begrænser en DatePicker til mellem to LocalDate objekter.
+     *
+     * @param datePicker den DatePicker der skal begrænses
+     * @param startDate startdatoen på begrænsningen
+     * @param endDate slutdatoen på begrænsningen
+     */
     private void restrictDatePicker (DatePicker datePicker, LocalDate startDate, LocalDate endDate) {
         datePicker.setDayCellFactory(picker -> new DateCell() {
             public void updateItem (LocalDate date, boolean empty) {
@@ -526,6 +578,11 @@ public class RegistrationPane extends GridPane {
         });
     }
 
+    /**
+     * Validere et nødvendigt textfield.
+     *
+     * @param textField det textfield der skal valideres
+     */
     private void stringValidation (final TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();
@@ -539,6 +596,11 @@ public class RegistrationPane extends GridPane {
         });
     }
 
+    /**
+     * Validere et ikke nødvendigt textfield.
+     *
+     * @param textField det textfield der skal valideres
+     */
     private void specificStringValidation (final TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();
@@ -555,6 +617,11 @@ public class RegistrationPane extends GridPane {
         });
     }
 
+    /**
+     * Validere et nødvendigt tlf. nr. textfield.
+     *
+     * @param textField det textfield der skal valideres
+     */
     private void numberValidation (final TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();
@@ -568,6 +635,11 @@ public class RegistrationPane extends GridPane {
         });
     }
 
+    /**
+     * Validere et ikke nødvendigt tlf. nr. textfield.
+     *
+     * @param textField det textfield der skal valideres
+     */
     private void specificNumberValidation (final TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             String text = newValue.trim();

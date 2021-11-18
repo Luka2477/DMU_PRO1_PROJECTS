@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -19,6 +20,7 @@ public class AdminCreateHotelWindow extends Stage {
 
     private TextField txfName, txfAddress;
     private NumericField nufSinglePrice, nufDoublePrice;
+    private Label lblError;
 
     AdminCreateHotelWindow (Hotel hotel) {
         this.initStyle(StageStyle.UTILITY);
@@ -60,6 +62,10 @@ public class AdminCreateHotelWindow extends Stage {
         Label lblDoublePrice = new Label("Doubleværelsespris:");
         pane.add(lblDoublePrice, 0, 3);
 
+        this.lblError = new Label();
+        this.lblError.setTextFill(Color.RED);
+        pane.add(this.lblError, 0, 4, 2, 1);
+
         this.txfName = new TextField();
         pane.add(this.txfName, 1, 0);
 
@@ -76,11 +82,11 @@ public class AdminCreateHotelWindow extends Stage {
 
         Button btnCancel = new Button("Afslut");
         btnCancel.setOnAction(event -> this.cancelAction());
-        pane.add(btnCancel, 0, 4);
+        pane.add(btnCancel, 0, 5);
 
         Button btnSaveCreate = new Button((this.hotel != null) ? "Gem" : "Opret");
         btnSaveCreate.setOnAction(event -> this.saveCreateAction());
-        pane.add(btnSaveCreate, 1, 4);
+        pane.add(btnSaveCreate, 1, 5);
 
         // -------------------------------------------------------------------------
 
@@ -107,8 +113,17 @@ public class AdminCreateHotelWindow extends Stage {
     private void saveCreateAction () {
         String name = this.txfName.getText().trim();
         String address = this.txfAddress.getText().trim();
-        int singlePrice = Integer.parseInt(this.nufSinglePrice.getText().trim());
-        int doublePrice = Integer.parseInt(this.nufDoublePrice.getText().trim());
+
+        String strSinglePrice = this.nufSinglePrice.getText().trim();
+        String strDoublePrice = this.nufDoublePrice.getText().trim();
+        int singlePrice, doublePrice;
+        if (!strSinglePrice.isEmpty() && !strDoublePrice.isEmpty()) {
+            singlePrice = Integer.parseInt(strSinglePrice);
+            doublePrice = Integer.parseInt(strDoublePrice);
+        } else {
+            this.lblError.setText("Pris er ikke angivet!");
+            return;
+        }
 
         if (this.hotel != null) {
             this.hotel.setName(name);

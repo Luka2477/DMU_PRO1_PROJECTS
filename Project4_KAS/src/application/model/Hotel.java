@@ -78,7 +78,8 @@ public class Hotel {
 
     // ----------------------------------------------------------------------------
 
-    public HotelRoom createHotelRoom (int price, boolean isSingle) {
+    public HotelRoom createHotelRoom (boolean isSingle) {
+        int price = (isSingle) ? this.singlePrice : this.doublePrice;
         HotelRoom hotelRoom = new HotelRoom(Hotel.NR, price, isSingle, this);
         Hotel.NR++;
         this.hotelRooms.add(hotelRoom);

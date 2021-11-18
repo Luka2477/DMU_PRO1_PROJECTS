@@ -7,6 +7,7 @@ import application.model.Hotel;
 import application.model.Registration;
 import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -153,6 +154,11 @@ public class AdminConferencesPane extends GridPane {
         btnAddExcursion.setOnAction(event -> this.addExcursionAction());
         hBoxExcursion.getChildren().add(btnAddExcursion);
 
+        Button btnGetCode = new Button("Få kode");
+        btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
+        this.add(btnGetCode, 4, 8);
+
         // --------------------------------------------------------------
 
         this.updateConferences();
@@ -282,6 +288,15 @@ public class AdminConferencesPane extends GridPane {
             adminAddExcursionWindow.showAndWait();
 
             this.updateControls();
+        }
+    }
+
+    // --------------------------------------------------------------
+
+    private void getCodeAction () {
+        if (this.conference != null) {
+            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.conference);
+            adminGetCodeWindow.show();
         }
     }
 

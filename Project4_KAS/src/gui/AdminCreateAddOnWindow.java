@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,6 +22,7 @@ public class AdminCreateAddOnWindow extends Stage {
 
     private TextField txfName;
     private NumericField nufPrice;
+    private Label lblError;
 
     AdminCreateAddOnWindow (Hotel hotel, AddOn addOn) {
         this.initStyle(StageStyle.UTILITY);
@@ -57,6 +59,10 @@ public class AdminCreateAddOnWindow extends Stage {
         Label lblPrice = new Label("Pris:");
         pane.add(lblPrice, 0, 1);
 
+        this.lblError = new Label();
+        this.lblError.setTextFill(Color.RED);
+        pane.add(this.lblError, 0, 2, 2, 1);
+
         this.txfName = new TextField();
         pane.add(this.txfName, 1, 0);
 
@@ -67,11 +73,11 @@ public class AdminCreateAddOnWindow extends Stage {
 
         Button btnCancel = new Button("Afslut");
         btnCancel.setOnAction(event -> this.cancelAction());
-        pane.add(btnCancel, 0, 2);
+        pane.add(btnCancel, 0, 3);
 
         Button btnSaveCreate = new Button((this.addOn != null) ? "Gem" : "Opret");
         btnSaveCreate.setOnAction(event -> this.saveCreateAction());
-        pane.add(btnSaveCreate, 1, 2);
+        pane.add(btnSaveCreate, 1, 3);
 
         // -------------------------------------------------------------------------
 
@@ -95,7 +101,15 @@ public class AdminCreateAddOnWindow extends Stage {
 
     private void saveCreateAction () {
         String name = this.txfName.getText().trim();
-        int price = Integer.parseInt(this.nufPrice.getText().trim());
+
+        String strPrice = this.nufPrice.getText().trim();
+        int price;
+        if (!strPrice.isEmpty()) {
+            price = Integer.parseInt(strPrice);
+        } else {
+            this.lblError.setText("Pris er ikke angivet!");
+            return;
+        }
 
         if (this.addOn != null) {
             this.addOn.setName(name);

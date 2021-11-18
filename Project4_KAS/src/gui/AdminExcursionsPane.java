@@ -5,6 +5,7 @@ import application.model.Conference;
 import application.model.Excursion;
 import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -107,6 +108,11 @@ public class AdminExcursionsPane extends GridPane {
         btnCreate.setOnAction(event -> this.createAction());
         hBox.getChildren().add(btnCreate);
 
+        Button btnGetCode = new Button("Få kode");
+        btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
+        this.add(btnGetCode, 2, 8);
+
         // --------------------------------------------------------------
 
         this.updateExcursions();
@@ -185,6 +191,15 @@ public class AdminExcursionsPane extends GridPane {
             this.excursion = null;
             this.clearControls();
             this.updateExcursions();
+        }
+    }
+
+    // --------------------------------------------------------------
+
+    private void getCodeAction () {
+        if (this.excursion != null) {
+            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.excursion);
+            adminGetCodeWindow.show();
         }
     }
 

@@ -5,6 +5,7 @@ import application.model.Participant;
 import application.model.Registration;
 import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -92,6 +93,11 @@ public class AdminParticipantsPane extends GridPane {
         btnUpdate.setOnAction(event -> this.updateAction());
         hBox.getChildren().add(btnUpdate);
 
+        Button btnGetCode = new Button("Få kode");
+        btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
+        this.add(btnGetCode, 2, 7);
+
         // --------------------------------------------------------------
 
         this.updateParticipants();
@@ -155,6 +161,15 @@ public class AdminParticipantsPane extends GridPane {
             this.participant = null;
             this.clearControls();
             this.updateParticipants();
+        }
+    }
+
+    // --------------------------------------------------------------
+
+    private void getCodeAction () {
+        if (this.participant != null) {
+            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.participant);
+            adminGetCodeWindow.show();
         }
     }
 

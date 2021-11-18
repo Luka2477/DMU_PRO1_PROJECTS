@@ -7,6 +7,7 @@ import application.model.Hotel;
 import application.model.HotelRoom;
 import gui.components.NumericField;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -127,6 +128,11 @@ public class AdminHotelsPane extends GridPane {
         Button btnCreateAddOn = new Button("Opret tillæg");
         btnCreateAddOn.setOnAction(event -> this.createAddOnAction());
         hBoxAddOns.getChildren().add(btnCreateAddOn);
+
+        Button btnGetCode = new Button("Få kode");
+        btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
+        this.add(btnGetCode, 4, 6);
 
         // --------------------------------------------------------------
 
@@ -250,6 +256,15 @@ public class AdminHotelsPane extends GridPane {
 
             this.addOn = null;
             this.updateControls();
+        }
+    }
+
+    // --------------------------------------------------------------
+
+    private void getCodeAction () {
+        if (this.hotel != null) {
+            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.hotel);
+            adminGetCodeWindow.show();
         }
     }
 

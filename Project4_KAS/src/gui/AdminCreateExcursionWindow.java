@@ -151,8 +151,17 @@ public class AdminCreateExcursionWindow extends Stage {
         String destination = this.txfDestination.getText().trim();
         LocalDate date = this.dtpDate.getValue();
         boolean isLunchIncluded = this.chbLunch.isSelected();
-        int price = Integer.parseInt(this.nufPrice.getText().trim());
-        int timeHour = Integer.parseInt(this.nufTime.getText().trim());
+
+        String strPrice = this.nufPrice.getText().trim();
+        String strTimeHour = this.nufTime.getText().trim();
+        int price, timeHour;
+        if (!strPrice.isEmpty() && !strTimeHour.isEmpty()) {
+            price = Integer.parseInt(this.nufPrice.getText().trim());
+            timeHour = Integer.parseInt(this.nufTime.getText().trim());
+        } else {
+            this.lblError.setText("Pris eller tid er ikke angivet!");
+            return;
+        }
 
         LocalDateTime dateTime;
         if (timeHour >= 0 && timeHour <= 23) {

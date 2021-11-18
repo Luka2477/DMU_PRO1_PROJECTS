@@ -47,7 +47,7 @@ public class AdminAddExcursionToConferenceWindow extends Stage {
         // -------------------------------------------------------------------------
 
         this.lvwExcursions = new ListView<>();
-        this.lvwExcursions.setPrefSize(300, 150);
+        this.lvwExcursions.setPrefSize(300, 500);
         this.lvwExcursions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         pane.add(this.lvwExcursions, 0, 0, 2, 1);
 

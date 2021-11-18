@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,6 +22,7 @@ public class AdminCreateConferenceWindow extends Stage {
     private TextField txfName, txfAddress;
     private DatePicker dtpStartDate, dtpEndDate, dtpDeadline;
     private NumericField nufDailyPrice, nufStartTime, nufEndTime;
+    private Label lblError;
 
     AdminCreateConferenceWindow (Conference conference) {
         this.initStyle(StageStyle.UTILITY);
@@ -75,6 +77,10 @@ public class AdminCreateConferenceWindow extends Stage {
         Label lblDeadline = new Label("Tilmeldingsfrist:");
         pane.add(lblDeadline, 0, 7);
 
+        this.lblError = new Label();
+        this.lblError.setTextFill(Color.RED);
+        pane.add(this.lblError, 0, 8, 2, 1);
+
         this.txfName = new TextField();
         pane.add(this.txfName, 1, 0);
 
@@ -107,11 +113,11 @@ public class AdminCreateConferenceWindow extends Stage {
 
         Button btnCancel = new Button("Afslut");
         btnCancel.setOnAction(event -> this.cancelAction());
-        pane.add(btnCancel, 0, 8);
+        pane.add(btnCancel, 0, 9);
 
         Button btnSaveCreate = new Button((this.conference != null) ? "Gem" : "Opret");
         btnSaveCreate.setOnAction(event -> this.saveCreateAction());
-        pane.add(btnSaveCreate, 1, 8);
+        pane.add(btnSaveCreate, 1, 9);
 
         // -------------------------------------------------------------------------
 
@@ -151,10 +157,21 @@ public class AdminCreateConferenceWindow extends Stage {
     private void saveCreateAction () {
         String name = this.txfName.getText().trim();
         String address = this.txfAddress.getText().trim();
-        int dailyPrice = Integer.parseInt(this.nufDailyPrice.getText().trim());
-        int startTime = Integer.parseInt(this.nufStartTime.getText().trim());
+
+        String strDailyPrice = this.nufDailyPrice.getText().trim();
+        String strStartTime = this.nufStartTime.getText().trim();
+        String strEndTime = this.nufEndTime.getText().trim();
+        int dailyPrice, startTime, endTime;
+        if (!strDailyPrice.isEmpty() && !strStartTime.isEmpty() && !strEndTime.isEmpty()) {
+            dailyPrice = Integer.parseInt(strDailyPrice);
+            startTime = Integer.parseInt(strStartTime);
+            endTime = Integer.parseInt(strEndTime);
+        } else {
+            this.lblError.setText("Dagspris, starttid eller sluttid er ikke angivet!");
+            return;
+        }
+
         LocalDateTime startDateTime = this.dtpStartDate.getValue().atTime(startTime, 0);
-        int endTime = Integer.parseInt(this.nufEndTime.getText().trim());
         LocalDateTime endDateTime = this.dtpEndDate.getValue().atTime(endTime, 0);
         LocalDateTime deadline = this.dtpDeadline.getValue().atTime(23, 59);
 

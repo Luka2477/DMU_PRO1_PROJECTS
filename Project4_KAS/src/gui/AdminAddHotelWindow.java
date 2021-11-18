@@ -46,7 +46,7 @@ public class AdminAddHotelWindow extends Stage {
         // -------------------------------------------------------------------------
 
         this.lvwHotels = new ListView<>();
-        this.lvwHotels.setPrefSize(300, 150);
+        this.lvwHotels.setPrefSize(300, 500);
         this.lvwHotels.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         pane.add(this.lvwHotels, 0, 0, 2, 1);
 
