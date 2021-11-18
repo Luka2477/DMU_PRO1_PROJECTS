@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +47,7 @@ public class AdminAddHotelWindow extends Stage {
 
         this.lvwHotels = new ListView<>();
         this.lvwHotels.setPrefSize(300, 150);
+        this.lvwHotels.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         pane.add(this.lvwHotels, 0, 0, 2, 1);
 
         // -------------------------------------------------------------------------

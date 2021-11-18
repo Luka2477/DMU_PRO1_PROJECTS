@@ -54,8 +54,6 @@ public class AdminCreateExcursionWindow extends Stage {
 
         // -------------------------------------------------------------------------
 
-        // TODO
-
         VBox vBox = new VBox();
         pane.add(vBox, 0, 0, 2, 1);
 

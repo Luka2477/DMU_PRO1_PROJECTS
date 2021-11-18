@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -47,6 +48,7 @@ public class AdminAddExcursionToConferenceWindow extends Stage {
 
         this.lvwExcursions = new ListView<>();
         this.lvwExcursions.setPrefSize(300, 150);
+        this.lvwExcursions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         pane.add(this.lvwExcursions, 0, 0, 2, 1);
 
         // -------------------------------------------------------------------------

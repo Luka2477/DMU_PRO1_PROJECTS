@@ -194,6 +194,7 @@ public class AdminRegistrationsPane extends GridPane {
             this.nufCompanyTelephone.setText(this.registration.getCompanyTelephone());
 
             if (this.registration.getCompanion() != null) {
+                this.txfCompanionName.setText(this.registration.getCompanion().getName());
                 this.lvwExcursions.getItems().setAll(this.registration.getCompanion().getExcursions());
             }
 
