@@ -216,12 +216,12 @@ public class RegistrationPane extends GridPane {
         this.hotelGridPane.setVgap(10);
         this.hotelGridPane.setGridLinesVisible(false);
         this.hotelGridPane.setDisable(true);
-        this.add(this.hotelGridPane, 0, 2, 2, 1);
+        this.add(this.hotelGridPane, 2, 0, 1, 2);
 
         Label lblHotelHeader = new Label("Overnatningsønsker");
         lblHotelHeader.setFont(new Font(25));
         GridPane.setHalignment(lblHotelHeader, HPos.CENTER);
-        this.hotelGridPane.add(lblHotelHeader, 0, 0, 2, 1);
+        this.hotelGridPane.add(lblHotelHeader, 0, 0);
 
         Label lblHotel = new Label("Vil du booke hotel igennem os");
         this.chbHotel = new CheckBox();
@@ -229,7 +229,7 @@ public class RegistrationPane extends GridPane {
         lblHotel.setGraphic(this.chbHotel);
         lblHotel.setContentDisplay(ContentDisplay.RIGHT);
         GridPane.setHalignment(lblHotel, HPos.CENTER);
-        this.hotelGridPane.add(lblHotel, 0, 1, 2, 1);
+        this.hotelGridPane.add(lblHotel, 0, 1);
 
         this.lblHotels = new Label("Hoteller");
         this.lblHotels.setFont(new Font(15));
@@ -237,7 +237,7 @@ public class RegistrationPane extends GridPane {
         this.hotelGridPane.add(this.lblHotels, 0, 2);
 
         this.lvwHotels = new ListView<>();
-        this.lvwHotels.setPrefSize(700, 150);
+        this.lvwHotels.setPrefSize(200, 175);
         this.lvwHotels.setDisable(true);
         this.hotelGridPane.add(this.lvwHotels, 0, 3);
 
@@ -247,13 +247,13 @@ public class RegistrationPane extends GridPane {
         this.lblAddOns = new Label("Tillæg");
         this.lblAddOns.setFont(new Font(15));
         this.lblAddOns.setDisable(true);
-        this.hotelGridPane.add(this.lblAddOns, 1, 2);
+        this.hotelGridPane.add(this.lblAddOns, 0, 4);
 
         this.lvwAddOns = new ListView<>();
-        this.lvwAddOns.setPrefSize(300, 150);
+        this.lvwAddOns.setPrefSize(200, 150);
         this.lvwAddOns.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.lvwAddOns.setDisable(true);
-        this.hotelGridPane.add(this.lvwAddOns, 1, 3);
+        this.hotelGridPane.add(this.lvwAddOns, 0, 5);
 
         ChangeListener<AddOn> listenerAddOns = (ov, oldAddOn, newAddOn) -> this.selectedAddOnChanged();
         this.lvwAddOns.getSelectionModel().selectedItemProperty().addListener(listenerAddOns);
@@ -261,7 +261,7 @@ public class RegistrationPane extends GridPane {
         this.lblDouble = new Label("Bemærk at såfremt du medbringer en ledsager tildeles i automatisk et dobbeltværelse");
         this.lblDouble.setWrapText(true);
         this.lblDouble.setDisable(true);
-        this.hotelGridPane.add(this.lblDouble, 0, 4, 2, 1);
+        this.hotelGridPane.add(this.lblDouble, 0, 6);
 
         // --------------------------------------------------------------
 
