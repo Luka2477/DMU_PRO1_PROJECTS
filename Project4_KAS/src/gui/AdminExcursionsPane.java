@@ -22,6 +22,7 @@ public class AdminExcursionsPane extends GridPane {
     private final NumericField nufPrice;
     private final CheckBox chbLunch;
     private final TextArea txaConferences;
+    private final Button btnDelete, btnUpdate, btnGetCode;
 
     AdminExcursionsPane () {
         this.setPadding(new Insets(10));
@@ -96,26 +97,27 @@ public class AdminExcursionsPane extends GridPane {
         HBox hBox = new HBox(10);
         this.add(hBox, 0, 7);
 
-        Button btnDelete = new Button("Slet");
-        btnDelete.setOnAction(event -> this.deleteAction());
-        hBox.getChildren().add(btnDelete);
+        this.btnDelete = new Button("Slet");
+        this.btnDelete.setOnAction(event -> this.deleteAction());
+        hBox.getChildren().add(this.btnDelete);
 
-        Button btnUpdate = new Button("Opdatere");
-        btnUpdate.setOnAction(event -> this.updateAction());
-        hBox.getChildren().add(btnUpdate);
+        this.btnUpdate = new Button("Opdatere");
+        this.btnUpdate.setOnAction(event -> this.updateAction());
+        hBox.getChildren().add(this.btnUpdate);
 
         Button btnCreate = new Button("Opret");
         btnCreate.setOnAction(event -> this.createAction());
         hBox.getChildren().add(btnCreate);
 
-        Button btnGetCode = new Button("Få kode");
-        btnGetCode.setOnAction(event -> this.getCodeAction());
-        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
-        this.add(btnGetCode, 2, 8);
+        this.btnGetCode = new Button("Få kode");
+        this.btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(this.btnGetCode, HPos.RIGHT);
+        this.add(this.btnGetCode, 2, 8);
 
         // --------------------------------------------------------------
 
         this.updateExcursions();
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
@@ -129,6 +131,8 @@ public class AdminExcursionsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateControls () {
+        this.clearControls();
+
         if (this.excursion != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM-yyyy @ HH:mm");
 
@@ -147,6 +151,16 @@ public class AdminExcursionsPane extends GridPane {
             }
             this.txaConferences.setText(conferences.toString());
         }
+
+        this.updateButtons();
+    }
+
+    private void updateButtons () {
+        boolean excursion = this.excursion == null;
+
+        this.btnDelete.setDisable(excursion);
+        this.btnUpdate.setDisable(excursion);
+        this.btnGetCode.setDisable(excursion);
     }
 
     private void clearControls () {
@@ -157,6 +171,8 @@ public class AdminExcursionsPane extends GridPane {
         this.nufPrice.clear();
         this.chbLunch.setSelected(false);
         this.txaConferences.clear();
+
+        this.updateButtons();
     }
 
     private void updateExcursions () {
@@ -175,23 +191,19 @@ public class AdminExcursionsPane extends GridPane {
     }
 
     private void updateAction () {
-        if (this.excursion != null) {
-            AdminCreateExcursionWindow adminCreateExcursionWindow = new AdminCreateExcursionWindow(this.excursion);
-            adminCreateExcursionWindow.showAndWait();
+        AdminCreateExcursionWindow adminCreateExcursionWindow = new AdminCreateExcursionWindow(this.excursion);
+        adminCreateExcursionWindow.showAndWait();
 
-            this.updateControls();
-            this.updateExcursions();
-        }
+        this.updateControls();
+        this.updateExcursions();
     }
 
     private void deleteAction () {
-        if (this.excursion != null) {
-            Controller.removeExcursion(this.excursion);
+        Controller.removeExcursion(this.excursion);
 
-            this.excursion = null;
-            this.clearControls();
-            this.updateExcursions();
-        }
+        this.excursion = null;
+        this.clearControls();
+        this.updateExcursions();
     }
 
     // --------------------------------------------------------------

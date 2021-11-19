@@ -26,6 +26,7 @@ public class AdminRegistrationsPane extends GridPane {
     private final NumericField nufTelephone, nufCompanyTelephone, nufPrice;
     private final CheckBox chbSpeaker;
     private final TextArea txaAddOns;
+    private final Button btnDelete, btnUpdate, btnRemoveExcursion, btnAddExcursion, btnGetCode;
 
     AdminRegistrationsPane () {
         this.setPadding(new Insets(10));
@@ -144,33 +145,34 @@ public class AdminRegistrationsPane extends GridPane {
         HBox hBox = new HBox(10);
         this.add(hBox, 0, 6);
 
-        Button btnDelete = new Button("Slet registration");
-        btnDelete.setOnAction(event -> this.deleteAction());
-        hBox.getChildren().add(btnDelete);
+        this.btnDelete = new Button("Slet registration");
+        this.btnDelete.setOnAction(event -> this.deleteAction());
+        hBox.getChildren().add(this.btnDelete);
 
-        Button btnUpdate = new Button("Opdatere registration");
-        btnUpdate.setOnAction(event -> this.updateAction());
-        hBox.getChildren().add(btnUpdate);
+        this.btnUpdate = new Button("Opdatere registration");
+        this.btnUpdate.setOnAction(event -> this.updateAction());
+        hBox.getChildren().add(this.btnUpdate);
 
         HBox hBoxExcursion = new HBox(10);
         this.add(hBoxExcursion, 2, 6);
 
-        Button btnRemoveExcursion = new Button("Fjern udflugt");
-        btnRemoveExcursion.setOnAction(event -> this.removeExcursionAction());
-        hBoxExcursion.getChildren().add(btnRemoveExcursion);
+        this.btnRemoveExcursion = new Button("Fjern udflugt");
+        this.btnRemoveExcursion.setOnAction(event -> this.removeExcursionAction());
+        hBoxExcursion.getChildren().add(this.btnRemoveExcursion);
 
-        Button btnAddExcursion = new Button("Tilføj udflugt");
-        btnAddExcursion.setOnAction(event -> this.addExcursionAction());
-        hBoxExcursion.getChildren().add(btnAddExcursion);
+        this.btnAddExcursion = new Button("Tilføj udflugt");
+        this.btnAddExcursion.setOnAction(event -> this.addExcursionAction());
+        hBoxExcursion.getChildren().add(this.btnAddExcursion);
 
-        Button btnGetCode = new Button("Få kode");
-        btnGetCode.setOnAction(event -> this.getCodeAction());
-        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
-        this.add(btnGetCode, 4, 7);
+        this.btnGetCode = new Button("Få kode");
+        this.btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(this.btnGetCode, HPos.RIGHT);
+        this.add(this.btnGetCode, 4, 7);
 
         // --------------------------------------------------------------
 
         this.updateRegistrations();
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
@@ -183,11 +185,15 @@ public class AdminRegistrationsPane extends GridPane {
 
     private void selectedExcursionChanged (Excursion excursion) {
         this.excursion = excursion;
+
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
 
     private void updateControls () {
+        this.clearControls();
+
         if (this.registration != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM-yyyy");
 
@@ -218,6 +224,20 @@ public class AdminRegistrationsPane extends GridPane {
 
             this.nufPrice.setText(this.registration.calulateTotalPrice() + "");
         }
+
+        this.updateButtons();
+    }
+
+    private void updateButtons () {
+        boolean registration = this.registration == null;
+        boolean excursion = this.excursion == null;
+
+        this.btnDelete.setDisable(registration);
+        this.btnUpdate.setDisable(registration);
+        this.btnAddExcursion.setDisable(registration);
+        this.btnGetCode.setDisable(registration);
+
+        this.btnRemoveExcursion.setDisable(excursion);
     }
 
     private void clearControls () {
@@ -234,6 +254,8 @@ public class AdminRegistrationsPane extends GridPane {
         this.txfHotel.clear();
         this.txaAddOns.clear();
         this.nufPrice.clear();
+
+        this.updateButtons();
     }
 
     private void updateRegistrations () {
@@ -243,52 +265,42 @@ public class AdminRegistrationsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateAction () {
-        if (this.registration != null) {
-            AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.registration);
-            adminUpdateRegistrationWindow.showAndWait();
+        AdminUpdateRegistrationWindow adminUpdateRegistrationWindow = new AdminUpdateRegistrationWindow(this.registration);
+        adminUpdateRegistrationWindow.showAndWait();
 
-            this.updateControls();
-            this.updateRegistrations();
-        }
+        this.updateControls();
+        this.updateRegistrations();
     }
 
     private void deleteAction () {
-        if (this.registration != null) {
-            Controller.removeRegistration(this.registration);
+        Controller.removeRegistration(this.registration);
 
-            this.registration = null;
-            this.clearControls();
-            this.updateRegistrations();
-        }
+        this.registration = null;
+        this.clearControls();
+        this.updateRegistrations();
     }
 
     // --------------------------------------------------------------
 
     private void removeExcursionAction () {
-        if (this.registration != null && this.excursion != null) {
-            this.registration.getCompanion().removeExcursion(excursion);
+        this.registration.getCompanion().removeExcursion(excursion);
 
-            this.excursion = null;
-            this.updateControls();
-        }
+        this.excursion = null;
+        this.updateControls();
     }
 
     private void addExcursionAction () {
-        if (this.registration != null) {
-            AdminAddExcursionToRegistrationWindow adminAddExcursionToRegistrationWindow = new AdminAddExcursionToRegistrationWindow(this.registration);
-            adminAddExcursionToRegistrationWindow.showAndWait();
+        AdminAddExcursionToRegistrationWindow adminAddExcursionToRegistrationWindow = new AdminAddExcursionToRegistrationWindow(this.registration);
+        adminAddExcursionToRegistrationWindow.showAndWait();
 
-            this.updateControls();
-        }
+        this.updateControls();
     }
 
     // --------------------------------------------------------------
 
     private void getCodeAction () {
-        if (this.registration != null) {
-            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.registration);
-            adminGetCodeWindow.show();
-        }
+        AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.registration);
+        adminGetCodeWindow.show();
     }
 
 }

@@ -19,6 +19,7 @@ public class AdminParticipantsPane extends GridPane {
     private final TextField txfName, txfAddress, txfCountry, txfCity;
     private final NumericField nufTelephone;
     private final TextArea txaRegistrations;
+    private final Button btnDelete, btnUpdate, btnGetCode;
 
     AdminParticipantsPane () {
         this.setPadding(new Insets(10));
@@ -85,22 +86,23 @@ public class AdminParticipantsPane extends GridPane {
         HBox hBox = new HBox(10);
         this.add(hBox, 0, 6);
 
-        Button btnDelete = new Button("Slet");
-        btnDelete.setOnAction(event -> this.deleteAction());
-        hBox.getChildren().add(btnDelete);
+        this.btnDelete = new Button("Slet");
+        this.btnDelete.setOnAction(event -> this.deleteAction());
+        hBox.getChildren().add(this.btnDelete);
 
-        Button btnUpdate = new Button("Opdatere");
-        btnUpdate.setOnAction(event -> this.updateAction());
-        hBox.getChildren().add(btnUpdate);
+        this.btnUpdate = new Button("Opdatere");
+        this.btnUpdate.setOnAction(event -> this.updateAction());
+        hBox.getChildren().add(this.btnUpdate);
 
-        Button btnGetCode = new Button("Få kode");
-        btnGetCode.setOnAction(event -> this.getCodeAction());
-        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
-        this.add(btnGetCode, 2, 7);
+        this.btnGetCode = new Button("Få kode");
+        this.btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(this.btnGetCode, HPos.RIGHT);
+        this.add(this.btnGetCode, 2, 7);
 
         // --------------------------------------------------------------
 
         this.updateParticipants();
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
@@ -114,6 +116,8 @@ public class AdminParticipantsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateControls () {
+        this.clearControls();
+
         if (this.participant != null) {
             this.txfName.setText(this.participant.getName());
             this.txfAddress.setText(this.participant.getAddress());
@@ -127,6 +131,16 @@ public class AdminParticipantsPane extends GridPane {
             }
             this.txaRegistrations.setText(registrations.toString());
         }
+
+        this.updateButtons();
+    }
+
+    private void updateButtons () {
+        boolean participant = this.participant == null;
+
+        this.btnDelete.setDisable(participant);
+        this.btnUpdate.setDisable(participant);
+        this.btnGetCode.setDisable(participant);
     }
 
     private void clearControls () {
@@ -136,6 +150,8 @@ public class AdminParticipantsPane extends GridPane {
         this.txfCity.clear();
         this.nufTelephone.clear();
         this.txaRegistrations.clear();
+
+        this.updateButtons();
     }
 
     private void updateParticipants () {
@@ -145,32 +161,26 @@ public class AdminParticipantsPane extends GridPane {
     // --------------------------------------------------------------
 
     private void updateAction () {
-        if (this.participant != null) {
-            AdminUpdateParticipantsWindow adminUpdateParticipantsWindow = new AdminUpdateParticipantsWindow(this.participant);
-            adminUpdateParticipantsWindow.showAndWait();
+        AdminUpdateParticipantsWindow adminUpdateParticipantsWindow = new AdminUpdateParticipantsWindow(this.participant);
+        adminUpdateParticipantsWindow.showAndWait();
 
-            this.updateControls();
-            this.updateParticipants();
-        }
+        this.updateControls();
+        this.updateParticipants();
     }
 
     private void deleteAction () {
-        if (this.participant != null) {
-            Controller.removeParticipant(this.participant);
+        Controller.removeParticipant(this.participant);
 
-            this.participant = null;
-            this.clearControls();
-            this.updateParticipants();
-        }
+        this.participant = null;
+        this.clearControls();
+        this.updateParticipants();
     }
 
     // --------------------------------------------------------------
 
     private void getCodeAction () {
-        if (this.participant != null) {
-            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.participant);
-            adminGetCodeWindow.show();
-        }
+        AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.participant);
+        adminGetCodeWindow.show();
     }
 
 }

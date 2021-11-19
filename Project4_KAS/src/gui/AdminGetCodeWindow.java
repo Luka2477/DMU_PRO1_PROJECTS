@@ -80,9 +80,15 @@ public class AdminGetCodeWindow extends Stage {
             }
 
             if (registration.getHotelRoom() != null) {
-                code.append(String.format("r.setHotelRoom(HOTEL_%s.createHotelRoom(%s));",
+                code.append(String.format("HotelRoom hr = HOTEL_%s.createHotelRoom(%s);%n",
                         registration.getHotelRoom().getHotel().getName(),
                         (registration.getCompanion() != null) ? "false" : "true"));
+
+                for (AddOn addOn : registration.getHotelRoom().getAddOns()) {
+                    code.append(String.format("hr.createAddon(\"%s\", %d);%n", addOn.getName(), addOn.getPrice()));
+                }
+
+                code.append("r.setHotel(hr);");
             }
         } else if (this.object.getClass() == Conference.class) {
             Conference conference = (Conference) this.object;

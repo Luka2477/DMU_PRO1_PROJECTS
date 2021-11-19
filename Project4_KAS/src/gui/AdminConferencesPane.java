@@ -27,6 +27,7 @@ public class AdminConferencesPane extends GridPane {
     private final TextField txfName, txfAddress, txfStartDate, txfEndDate, txfDeadline;
     private final NumericField nufDailyPrice;
     private final TextArea txaRegistrations;
+    private final Button btnDelete, btnUpdate, btnRemoveHotel, btnRemoveExcursion, btnGetCode, btnAddHotel, btnAddExcursion;
 
     AdminConferencesPane () {
         this.setPadding(new Insets(10));
@@ -120,13 +121,15 @@ public class AdminConferencesPane extends GridPane {
         HBox hBoxConference = new HBox(10);
         this.add(hBoxConference, 0, 7);
 
-        Button btnDelete = new Button("Slet");
-        btnDelete.setOnAction(event -> this.deleteAction());
-        hBoxConference.getChildren().add(btnDelete);
+        this.btnDelete = new Button("Slet");
+        this.btnDelete.setOnAction(event -> this.deleteAction());
+        this.btnDelete.setDisable(true);
+        hBoxConference.getChildren().add(this.btnDelete);
 
-        Button btnUpdate = new Button("Opdatere");
-        btnUpdate.setOnAction(event -> this.updateAction());
-        hBoxConference.getChildren().add(btnUpdate);
+        this.btnUpdate = new Button("Opdatere");
+        this.btnUpdate.setOnAction(event -> this.updateAction());
+        this.btnUpdate.setDisable(true);
+        hBoxConference.getChildren().add(this.btnUpdate);
 
         Button btnCreate = new Button("Opret");
         btnCreate.setOnAction(event -> this.createAction());
@@ -135,29 +138,34 @@ public class AdminConferencesPane extends GridPane {
         HBox hBoxHotel = new HBox(10);
         this.add(hBoxHotel, 2, 7);
 
-        Button btnRemoveHotel = new Button("Fjern hotel");
-        btnRemoveHotel.setOnAction(event -> this.removeHotelAction());
-        hBoxHotel.getChildren().add(btnRemoveHotel);
+        this.btnRemoveHotel = new Button("Fjern hotel");
+        this.btnRemoveHotel.setOnAction(event -> this.removeHotelAction());
+        this.btnRemoveHotel.setDisable(true);
+        hBoxHotel.getChildren().add(this.btnRemoveHotel);
 
-        Button btnAddHotel = new Button("Tilføj hotel");
-        btnAddHotel.setOnAction(event -> this.addHotelAction());
-        hBoxHotel.getChildren().add(btnAddHotel);
+        this.btnAddHotel = new Button("Tilføj hotel");
+        this.btnAddHotel.setOnAction(event -> this.addHotelAction());
+        this.btnAddHotel.setDisable(true);
+        hBoxHotel.getChildren().add(this.btnAddHotel);
 
         HBox hBoxExcursion = new HBox(10);
         this.add(hBoxExcursion, 4, 7);
 
-        Button btnRemoveExcursion = new Button("Fjern udflugt");
-        btnRemoveExcursion.setOnAction(event -> this.removeExcursionAction());
-        hBoxExcursion.getChildren().add(btnRemoveExcursion);
+        this.btnRemoveExcursion = new Button("Fjern udflugt");
+        this.btnRemoveExcursion.setOnAction(event -> this.removeExcursionAction());
+        this.btnRemoveExcursion.setDisable(true);
+        hBoxExcursion.getChildren().add(this.btnRemoveExcursion);
 
-        Button btnAddExcursion = new Button("Tilføj udflugt");
-        btnAddExcursion.setOnAction(event -> this.addExcursionAction());
-        hBoxExcursion.getChildren().add(btnAddExcursion);
+        this.btnAddExcursion = new Button("Tilføj udflugt");
+        this.btnAddExcursion.setOnAction(event -> this.addExcursionAction());
+        this.btnAddExcursion.setDisable(true);
+        hBoxExcursion.getChildren().add(this.btnAddExcursion);
 
-        Button btnGetCode = new Button("Få kode");
-        btnGetCode.setOnAction(event -> this.getCodeAction());
-        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
-        this.add(btnGetCode, 4, 8);
+        this.btnGetCode = new Button("Få kode");
+        this.btnGetCode.setOnAction(event -> this.getCodeAction());
+        this.btnGetCode.setDisable(true);
+        GridPane.setHalignment(this.btnGetCode, HPos.RIGHT);
+        this.add(this.btnGetCode, 4, 8);
 
         // --------------------------------------------------------------
 
@@ -174,10 +182,14 @@ public class AdminConferencesPane extends GridPane {
 
     private void selectedHotelChanged (Hotel hotel) {
         this.hotel = hotel;
+
+        this.updateButtons();
     }
 
     private void selectedExcursionChanged (Excursion excursion) {
         this.excursion = excursion;
+
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
@@ -202,6 +214,23 @@ public class AdminConferencesPane extends GridPane {
             }
             this.txaRegistrations.setText(registrations.toString());
         }
+
+        this.updateButtons();
+    }
+
+    private void updateButtons () {
+        boolean conference = this.conference == null;
+        boolean hotel = this.hotel == null;
+        boolean excursion = this.excursion == null;
+
+        this.btnUpdate.setDisable(conference);
+        this.btnDelete.setDisable(conference);
+        this.btnGetCode.setDisable(conference);
+        this.btnAddHotel.setDisable(conference);
+        this.btnAddExcursion.setDisable(conference);
+
+        this.btnRemoveHotel.setDisable(hotel);
+        this.btnRemoveExcursion.setDisable(excursion);
     }
 
     private void clearControls () {
@@ -214,6 +243,8 @@ public class AdminConferencesPane extends GridPane {
         this.lvwHotels.getItems().clear();
         this.lvwExcursions.getItems().clear();
         this.txaRegistrations.clear();
+
+        this.updateButtons();
     }
 
     private void updateConferences () {
@@ -232,72 +263,58 @@ public class AdminConferencesPane extends GridPane {
     }
 
     private void updateAction () {
-        if (this.conference != null) {
-            AdminCreateConferenceWindow adminCreateConferenceWindow = new AdminCreateConferenceWindow(this.conference);
-            adminCreateConferenceWindow.showAndWait();
+        AdminCreateConferenceWindow adminCreateConferenceWindow = new AdminCreateConferenceWindow(this.conference);
+        adminCreateConferenceWindow.showAndWait();
 
-            this.updateControls();
-            this.updateConferences();
-        }
+        this.updateControls();
+        this.updateConferences();
     }
 
     private void deleteAction () {
-        if (this.conference != null) {
-            Controller.removeConference(this.conference);
+        Controller.removeConference(this.conference);
 
-            this.conference = null;
-            this.clearControls();
-            this.updateConferences();
-        }
+        this.conference = null;
+        this.clearControls();
+        this.updateConferences();
     }
 
     // --------------------------------------------------------------
 
     private void removeHotelAction () {
-        if (this.conference != null && this.hotel != null) {
-            this.conference.removeHotel(this.hotel);
+        this.conference.removeHotel(this.hotel);
 
-            this.hotel = null;
-            this.updateControls();
-        }
+        this.hotel = null;
+        this.updateControls();
     }
 
     private void addHotelAction () {
-        if (this.conference != null) {
-            AdminAddHotelWindow adminAddHotelWindow = new AdminAddHotelWindow(this.conference);
-            adminAddHotelWindow.showAndWait();
+        AdminAddHotelWindow adminAddHotelWindow = new AdminAddHotelWindow(this.conference);
+        adminAddHotelWindow.showAndWait();
 
-            this.updateControls();
-        }
+        this.updateControls();
     }
 
     // --------------------------------------------------------------
 
     private void removeExcursionAction () {
-        if (this.conference != null && this.excursion != null) {
-            this.conference.removeExcursion(excursion);
+        this.conference.removeExcursion(excursion);
 
-            this.excursion = null;
-            this.updateControls();
-        }
+        this.excursion = null;
+        this.updateControls();
     }
 
     private void addExcursionAction () {
-        if (this.conference != null) {
-            AdminAddExcursionToConferenceWindow adminAddExcursionWindow = new AdminAddExcursionToConferenceWindow(this.conference);
-            adminAddExcursionWindow.showAndWait();
+        AdminAddExcursionToConferenceWindow adminAddExcursionWindow = new AdminAddExcursionToConferenceWindow(this.conference);
+        adminAddExcursionWindow.showAndWait();
 
-            this.updateControls();
-        }
+        this.updateControls();
     }
 
     // --------------------------------------------------------------
 
     private void getCodeAction () {
-        if (this.conference != null) {
-            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.conference);
-            adminGetCodeWindow.show();
-        }
+        AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.conference);
+        adminGetCodeWindow.show();
     }
 
 }

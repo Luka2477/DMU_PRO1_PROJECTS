@@ -148,7 +148,7 @@ public abstract class Controller {
         }
 
         for (Registration registration : Storage.getRegistrations()) {
-            if (registration.getHotelRoom().getHotel() == hotel) {
+            if (registration.getHotelRoom() != null && registration.getHotelRoom().getHotel() == hotel) {
                 registration.setHotelRoom(null);
             }
         }

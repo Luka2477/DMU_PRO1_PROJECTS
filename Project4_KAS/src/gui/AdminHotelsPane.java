@@ -25,6 +25,7 @@ public class AdminHotelsPane extends GridPane {
     private final TextField txfName, txfAddress;
     private final NumericField nufSinglePrice, nufDoublePrice;
     private final TextArea txaConferences, txaHotelRooms;
+    private final Button btnGetCode, btnDeleteHotel, btnUpdateHotel, btnDeleteAddOn, btnUpdateAddOn, btnCreateAddOn;
 
     AdminHotelsPane () {
         this.setPadding(new Insets(10));
@@ -102,13 +103,13 @@ public class AdminHotelsPane extends GridPane {
         HBox hBoxHotels = new HBox(10);
         this.add(hBoxHotels, 0, 5);
 
-        Button btnDeleteHotel = new Button("Slet hotel");
-        btnDeleteHotel.setOnAction(event -> this.deleteHotelAction());
-        hBoxHotels.getChildren().add(btnDeleteHotel);
+        this.btnDeleteHotel = new Button("Slet hotel");
+        this.btnDeleteHotel.setOnAction(event -> this.deleteHotelAction());
+        hBoxHotels.getChildren().add(this.btnDeleteHotel);
 
-        Button btnUpdateHotel = new Button("Opdatere hotel");
-        btnUpdateHotel.setOnAction(event -> this.updateHotelAction());
-        hBoxHotels.getChildren().add(btnUpdateHotel);
+        this.btnUpdateHotel = new Button("Opdatere hotel");
+        this.btnUpdateHotel.setOnAction(event -> this.updateHotelAction());
+        hBoxHotels.getChildren().add(this.btnUpdateHotel);
 
         Button btnCreateHotel = new Button("Opret hotel");
         btnCreateHotel.setOnAction(event -> this.createHotelAction());
@@ -117,26 +118,27 @@ public class AdminHotelsPane extends GridPane {
         HBox hBoxAddOns = new HBox(10);
         this.add(hBoxAddOns, 2, 5);
 
-        Button btnDeleteAddOn = new Button("Slet tillæg");
-        btnDeleteAddOn.setOnAction(event -> this.deleteAddOnAction());
-        hBoxAddOns.getChildren().add(btnDeleteAddOn);
+        this.btnDeleteAddOn = new Button("Slet tillæg");
+        this.btnDeleteAddOn.setOnAction(event -> this.deleteAddOnAction());
+        hBoxAddOns.getChildren().add(this.btnDeleteAddOn);
 
-        Button btnUpdateAddOn = new Button("Opdatere tillæg");
-        btnUpdateAddOn.setOnAction(event -> this.updateAddOnAction());
-        hBoxAddOns.getChildren().add(btnUpdateAddOn);
+        this.btnUpdateAddOn = new Button("Opdatere tillæg");
+        this.btnUpdateAddOn.setOnAction(event -> this.updateAddOnAction());
+        hBoxAddOns.getChildren().add(this.btnUpdateAddOn);
 
-        Button btnCreateAddOn = new Button("Opret tillæg");
-        btnCreateAddOn.setOnAction(event -> this.createAddOnAction());
-        hBoxAddOns.getChildren().add(btnCreateAddOn);
+        this.btnCreateAddOn = new Button("Opret tillæg");
+        this.btnCreateAddOn.setOnAction(event -> this.createAddOnAction());
+        hBoxAddOns.getChildren().add(this.btnCreateAddOn);
 
-        Button btnGetCode = new Button("Få kode");
-        btnGetCode.setOnAction(event -> this.getCodeAction());
-        GridPane.setHalignment(btnGetCode, HPos.RIGHT);
-        this.add(btnGetCode, 4, 6);
+        this.btnGetCode = new Button("Få kode");
+        this.btnGetCode.setOnAction(event -> this.getCodeAction());
+        GridPane.setHalignment(this.btnGetCode, HPos.RIGHT);
+        this.add(this.btnGetCode, 4, 6);
 
         // --------------------------------------------------------------
 
         this.updateHotels();
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
@@ -149,11 +151,15 @@ public class AdminHotelsPane extends GridPane {
 
     private void selectedAddOnChanged (AddOn addOn) {
         this.addOn = addOn;
+
+        this.updateButtons();
     }
 
     // --------------------------------------------------------------
 
     private void updateControls () {
+        this.clearControls();
+
         if (this.hotel != null) {
             this.txfName.setText(this.hotel.getName());
             this.txfAddress.setText(this.hotel.getAddress());
@@ -180,6 +186,21 @@ public class AdminHotelsPane extends GridPane {
             }
             this.txaHotelRooms.setText(hotelRooms.toString());
         }
+
+        this.updateButtons();
+    }
+
+    private void updateButtons () {
+        boolean hotel = this.hotel == null;
+        boolean addOn = this.addOn == null;
+
+        this.btnDeleteHotel.setDisable(hotel);
+        this.btnUpdateHotel.setDisable(hotel);
+        this.btnCreateAddOn.setDisable(hotel);
+        this.btnGetCode.setDisable(hotel);
+
+        this.btnUpdateAddOn.setDisable(addOn);
+        this.btnDeleteAddOn.setDisable(addOn);
     }
 
     private void clearControls () {
@@ -192,6 +213,8 @@ public class AdminHotelsPane extends GridPane {
         this.txaHotelRooms.clear();
 
         this.addOn = null;
+
+        this.updateButtons();
     }
 
     private void updateHotels () {
@@ -210,62 +233,50 @@ public class AdminHotelsPane extends GridPane {
     }
 
     private void updateHotelAction () {
-        if (this.hotel != null) {
-            AdminCreateHotelWindow adminCreateHotelWindow = new AdminCreateHotelWindow(this.lvwHotels.getSelectionModel().getSelectedItem());
-            adminCreateHotelWindow.showAndWait();
+        AdminCreateHotelWindow adminCreateHotelWindow = new AdminCreateHotelWindow(this.lvwHotels.getSelectionModel().getSelectedItem());
+        adminCreateHotelWindow.showAndWait();
 
-            this.updateControls();
-            this.updateHotels();
-        }
+        this.updateControls();
+        this.updateHotels();
     }
 
     private void deleteHotelAction () {
-        if (this.hotel != null) {
-            Controller.removeHotel(this.hotel);
+        Controller.removeHotel(this.hotel);
 
-            this.hotel = null;
-            this.clearControls();
-            this.updateHotels();
-        }
+        this.hotel = null;
+        this.clearControls();
+        this.updateHotels();
     }
 
     // --------------------------------------------------------------
 
     private void createAddOnAction () {
-        if (this.hotel != null) {
-            AdminCreateAddOnWindow adminCreateAddOnWindow = new AdminCreateAddOnWindow(this.hotel);
-            adminCreateAddOnWindow.showAndWait();
+        AdminCreateAddOnWindow adminCreateAddOnWindow = new AdminCreateAddOnWindow(this.hotel);
+        adminCreateAddOnWindow.showAndWait();
 
-            this.addOn = adminCreateAddOnWindow.getAddOn();
-            this.updateControls();
-        }
+        this.addOn = adminCreateAddOnWindow.getAddOn();
+        this.updateControls();
     }
 
     private void updateAddOnAction () {
-        if (this.hotel != null && this.addOn != null) {
-            AdminCreateAddOnWindow adminCreateAddOnWindow = new AdminCreateAddOnWindow(this.hotel, this.addOn);
-            adminCreateAddOnWindow.showAndWait();
+        AdminCreateAddOnWindow adminCreateAddOnWindow = new AdminCreateAddOnWindow(this.hotel, this.addOn);
+        adminCreateAddOnWindow.showAndWait();
 
-            this.updateControls();
-        }
+        this.updateControls();
     }
 
     private void deleteAddOnAction () {
-        if (this.hotel != null && this.addOn != null) {
-            this.hotel.removeAddOn(this.addOn);
+        this.hotel.removeAddOn(this.addOn);
 
-            this.addOn = null;
-            this.updateControls();
-        }
+        this.addOn = null;
+        this.updateControls();
     }
 
     // --------------------------------------------------------------
 
     private void getCodeAction () {
-        if (this.hotel != null) {
-            AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.hotel);
-            adminGetCodeWindow.show();
-        }
+        AdminGetCodeWindow adminGetCodeWindow = new AdminGetCodeWindow(this.hotel);
+        adminGetCodeWindow.show();
     }
 
 }
