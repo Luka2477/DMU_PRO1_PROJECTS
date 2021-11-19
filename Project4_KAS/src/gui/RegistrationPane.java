@@ -395,7 +395,11 @@ public class RegistrationPane extends GridPane {
     private void updatePrice () {
         if (this.conference != null && this.dtpStart.getValue() != null && this.dtpEnd.getValue() != null) {
             int stayInDays = (int) ChronoUnit.DAYS.between(this.dtpStart.getValue(), this.dtpEnd.getValue());
-            int conferencePrice = this.conference.getDailyPrice() * stayInDays;
+            int conferencePrice = 0;
+
+            if (!this.chbSpeaker.isSelected()) {
+                conferencePrice = this.conference.getDailyPrice() * (stayInDays + 1);
+            }
 
             int hotelPrice = 0;
             if (this.hotel != null) {

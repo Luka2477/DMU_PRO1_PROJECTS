@@ -3,6 +3,7 @@ package application.controller;
 import application.model.*;
 import storage.Storage;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public abstract class Controller {
     }
 
     private static void initStorage () {
-        Conference c1 = Controller.createConference("Hav og himmel", "Odense Universitet", 1000,
+        Conference c1 = Controller.createConference("Hav og himmel", "Odense Universitet", 1500,
                 LocalDateTime.of(2021, 12, 18, 8, 0),
                 LocalDateTime.of(2021, 12, 20, 18, 0),
                 LocalDateTime.of(2021, 12, 15, 23, 59));
@@ -41,6 +42,33 @@ public abstract class Controller {
         h3.createAddOn("morgenmad", 100);
 
         c1.addHotels(h1, h2, h3);
+
+        Participant p1 = Controller.createParticipant("Finn Madsen", "12345678", "abc 12", "Danmark", "Viby J");
+        Registration r1 = p1.createRegistration("", "", LocalDate.of(2021, 12, 18), LocalDate.of(2021, 12, 20), false, c1);
+
+        Participant p2 = Controller.createParticipant("Niels Petersen", "12345678", "abc 12", "Danmark", "Viby J");
+        Registration r2 = p2.createRegistration("", "", LocalDate.of(2021, 12, 18), LocalDate.of(2021, 12, 20), false, c1);
+        r2.setHotelRoom(h1.createHotelRoom(true));
+
+        Participant p3 = Controller.createParticipant("Peter Sommer", "12345678", "abc 12", "Danmark", "Viby J");
+        Registration r3 = p3.createRegistration("", "", LocalDate.of(2021, 12, 18), LocalDate.of(2021, 12, 20), false, c1);
+        Companion cp1 = r3.createCompanion("Mie Sommer");
+        cp1.addExcursion(e2);
+        cp1.addExcursion(e3);
+        HotelRoom hr1 = h1.createHotelRoom(false);
+        hr1.addAddOn(h1.getAddOns().get(0));
+        hr1.addAddOn(h1.getAddOns().get(1));
+        r3.setHotelRoom(hr1);
+
+        Participant p4 = Controller.createParticipant("Lone Jensen", "12345678", "abc 12", "Danmark", "Viby J");
+        Registration r4 = p4.createRegistration("", "", LocalDate.of(2021, 12, 18), LocalDate.of(2021, 12, 20), true, c1);
+        Companion cp2 = r4.createCompanion("Jan Madsen");
+        cp2.addExcursion(e1);
+        cp2.addExcursion(e2);
+        HotelRoom hr2 = h1.createHotelRoom(false);
+        hr2.addAddOn(h1.getAddOns().get(0));
+        hr2.addAddOn(h1.getAddOns().get(1));
+        r4.setHotelRoom(hr2);
     }
 
     // --------------------------------------------------------------
